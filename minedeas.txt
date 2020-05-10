@@ -1,0 +1,45 @@
+ideas:
+seasons
+better caves
+- make mining a more interesting activity
+- biome caves
+- make strongholds biome dependent?
+- more varied cave presets
+- wider, deeper holes?
+villagers
+farming
+- crops
+    - genetics
+- animals
+    - better food (treatment) = better meat?
+    - change breeding based on biome?
+    - manure
+better storage
+build your own village
+build your own biome!
+- place enough blocks of the biome type
+- somehow change heat/cold levels?
+combat:
+- (all) mobs have unique, useful drops
+- side dash
+enchantments:
+- different biome based enchantment dyes
+weather?
+exploration needs to be more interesting.
+- initially, maintain sense of discovery
+- try to guide players with intuition
+- somehow force people to build multiple bases?
+- add events to break up monotony?
+- meteors force exploration
+- more biome pets?
+- trains!
+- more dimensions
+technology:
+- ages
+inventory
+- can start small, but should be able to grow a lot
+- inventory management should NOT be a nightmare
+- hotbar
+- hotkeys
+- scroll scrolls hotbar item
+- inventory is a list
