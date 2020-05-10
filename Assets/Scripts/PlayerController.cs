@@ -19,8 +19,9 @@ public class PlayerController : MonoBehaviour
     public LayerMask enemyLayers;
     [SerializeField]
     public int inventoryIndex;
-
     private bool swinging;
+    [SerializeField]
+    PlayerInventoryUI inventoryUI;
     enum direction
     {
         up,
@@ -33,7 +34,7 @@ public class PlayerController : MonoBehaviour
     Dictionary<direction, Vector3> directionVectors;
     private void Awake()
     {
-        moveSpeed /= 100;
+        //moveSpeed /= 100;
         initializeDirectionBools();
         currentDirection = direction.down;
         characterSprite = GetComponent<SpriteRenderer>();
@@ -78,13 +79,12 @@ public class PlayerController : MonoBehaviour
     }
     public ItemObject getEquippedItem()
     {
-        ItemObject equippedItem =  InventoryManager.instance.activeInventories[inventoryIndex].items[UIManager.instance.activeSlotIndex];
-        return equippedItem;
+        return inventoryUI.GetActiveItem();
     }
     public void OnSwing(InputAction.CallbackContext context)
     {
 
-        if (!context.performed || swinging || !getEquippedItem().canSwing()) return;
+        if (!context.performed || swinging || getEquippedItem()==null ||!getEquippedItem().canSwing()) return;
         swingWeaponAnimator.gameObject.SetActive(true);
         swingWeaponAnimator.SetTrigger(directionBools[currentDirection]);
         swinging = true;
@@ -105,7 +105,7 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        transform.position += new Vector3(inputVector.x, inputVector.y, 0);
+        transform.position += new Vector3(inputVector.x, inputVector.y, 0) * Time.deltaTime;
 
     }
 }

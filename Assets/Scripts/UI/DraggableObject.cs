@@ -7,6 +7,16 @@ public class DraggableObject : MonoBehaviour
 {
     public Image img;
     public ItemObject item;
+    public static DraggableObject instance;
+    public bool dragging;
+    private void Awake()
+    {
+        if(instance != null && instance != this)
+        {
+            Destroy(gameObject);
+        }
+        instance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {

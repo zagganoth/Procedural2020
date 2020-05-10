@@ -25,7 +25,7 @@ public class DragButton : MonoBehaviour, IBeginDragHandler,
     public void OnBeginDrag(PointerEventData eventData)
     {
         isBeingDragged = true;
-        UIManager.instance.ItemClicked(slotIndex,parentInventory);
+        parentInventory.slotClicked(slotIndex);
         imageSprite.color = new Color(0.75f, 0.75f, 0.75f);
     }
 
@@ -36,22 +36,20 @@ public class DragButton : MonoBehaviour, IBeginDragHandler,
 
     public void OnDrop(PointerEventData eventData)
     {
-        UIManager.instance.ItemClicked(slotIndex,parentInventory);
+        parentInventory.slotClicked(slotIndex);
         imageSprite.color = new Color(1f, 1f, 1f);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         imageSprite.color = new Color(1f,1f, 1f);
-        UIManager.instance.ItemClicked(slotIndex,parentInventory);
+        parentInventory.slotClicked(slotIndex);
         isBeingDragged = false;
-        //transform.position = startPosition;
-        //UIManager.instance.ItemClicked(slotIndex);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if(UIManager.instance.dragging)
+        if(DraggableObject.instance.dragging)
             imageSprite.color = new Color(0.75f, 1f, 0.75f);
     }
 

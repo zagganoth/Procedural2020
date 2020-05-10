@@ -27,10 +27,9 @@ public class Inventory : ScriptableObject
     }
     private void initializeInventory()
     {
-        ItemObject empty = InventoryManager.instance.empty;
         for(var i = 0; i < size;i++)
         {
-            items.Add(empty);
+            items.Add(null);
         }
 
     }
@@ -41,10 +40,9 @@ public class Inventory : ScriptableObject
     private int getFirstUnusedIndex()
     {
         int index = 0;
-        ItemObject empty = InventoryManager.instance.empty;
         foreach (ItemObject item in items)
         {
-            if (item == empty) return index;
+            if (item == null) return index;
             index++;
         }
         return -1;
@@ -88,7 +86,7 @@ public class Inventory : ScriptableObject
         }
         else
         {
-            items[lIndex] = InventoryManager.instance.empty;
+            items[lIndex] = null;
         }
         usedSlots--;
     }

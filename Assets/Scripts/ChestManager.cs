@@ -25,8 +25,6 @@ public class ChestManager : MonoBehaviour
         if(hovering)
         {
             chestInventoryUI.ToggleChest(this);
-            //UIManager.instance.ToggleChestUIOpen(chestInventoryUI,this);
-            //chestInventoryUI.
         }
     }
     private void OnMouseExit()
