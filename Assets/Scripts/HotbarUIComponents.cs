@@ -10,8 +10,13 @@ public class HotbarUIComponents : BaseInventoryUIComponents
     {
         inventoryLayout = GetComponent<LayoutGroup>();
     }
-    protected override Inventory GetRelevantInventory()
+    public override Inventory GetRelevantInventory()
     {
         return invstance.activeInventories[invstance.playerHotBarIndex];
+    }
+
+    protected override void runInventoryAction()
+    {
+        throw new System.NotImplementedException();
     }
 }

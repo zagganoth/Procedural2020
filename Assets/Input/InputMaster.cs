@@ -57,6 +57,14 @@ public class @InputMaster : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""Quick Craft"",
+                    ""type"": ""Button"",
+                    ""id"": ""d8502ded-2a86-40d3-bdb8-46c77d66d4d7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
                 }
             ],
             ""bindings"": [
@@ -213,6 +221,17 @@ public class @InputMaster : IInputActionCollection, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e097f140-a820-4fe7-8ebc-ce693e0d2930"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Quick Craft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -243,6 +262,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
         m_Player_Scroll = m_Player.FindAction("Scroll", throwIfNotFound: true);
         m_Player_OpenInventory = m_Player.FindAction("Open Inventory", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_QuickCraft = m_Player.FindAction("Quick Craft", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -297,6 +317,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Scroll;
     private readonly InputAction m_Player_OpenInventory;
     private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_QuickCraft;
     public struct PlayerActions
     {
         private @InputMaster m_Wrapper;
@@ -306,6 +327,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
         public InputAction @Scroll => m_Wrapper.m_Player_Scroll;
         public InputAction @OpenInventory => m_Wrapper.m_Player_OpenInventory;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        public InputAction @QuickCraft => m_Wrapper.m_Player_QuickCraft;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -330,6 +352,9 @@ public class @InputMaster : IInputActionCollection, IDisposable
                 @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @QuickCraft.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnQuickCraft;
+                @QuickCraft.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnQuickCraft;
+                @QuickCraft.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnQuickCraft;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -349,6 +374,9 @@ public class @InputMaster : IInputActionCollection, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @QuickCraft.started += instance.OnQuickCraft;
+                @QuickCraft.performed += instance.OnQuickCraft;
+                @QuickCraft.canceled += instance.OnQuickCraft;
             }
         }
     }
@@ -369,5 +397,6 @@ public class @InputMaster : IInputActionCollection, IDisposable
         void OnScroll(InputAction.CallbackContext context);
         void OnOpenInventory(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnQuickCraft(InputAction.CallbackContext context);
     }
 }

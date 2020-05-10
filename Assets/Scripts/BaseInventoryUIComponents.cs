@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 [Serializable]
 public abstract class BaseInventoryUIComponents : MonoBehaviour
@@ -13,11 +14,14 @@ public abstract class BaseInventoryUIComponents : MonoBehaviour
     protected InventoryManager invstance;
     protected UIManager UIStance;
     protected abstract void childConstructor();
-    protected abstract Inventory GetRelevantInventory();
-    //protected abstract void runInventoryAction();
+    public abstract Inventory GetRelevantInventory();
+    protected abstract void runInventoryAction();
+    [SerializeField]
+    protected HashSet<InputControl> relevantActions;
     public void setRelevantVariables()
     {
-        invstance.SetActiveInventory(GetRelevantInventory());
+
+        //invstance.SetActiveInventory(GetRelevantInventory());
         slotImages = new List<Image>();
         slotBackgrounds = new List<Image>();
         slots = new List<DragButton>(GetComponentsInChildren<DragButton>());
@@ -32,15 +36,18 @@ public abstract class BaseInventoryUIComponents : MonoBehaviour
             index++;
         }
     }
-    public void Start()
+    public virtual void Start()
     {
         invstance = InventoryManager.instance;
         UIStance = UIManager.instance;
+        relevantActions = new HashSet<InputControl>();
         childConstructor();
         setRelevantVariables();
+        EventManager.instance.OnInventoryAction += handleKeyEvent;
     }
-    public void handleKeyEvent()
+    public void handleKeyEvent(object sender, EventManager.OnInventoryActionArgs e)
     {
-
+        if(relevantActions.Contains(e.context.control))
+            runInventoryAction();
     }
 }

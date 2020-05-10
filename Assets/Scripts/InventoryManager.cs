@@ -49,6 +49,14 @@ public class InventoryManager : MonoBehaviour
         //UIManager.instance.SetActiveInventoryUI(UIManager.instance.mainInventory);
         //UIManager.instance.updateInventoryUI();
     }
+    public void SetHotbarActive()
+    {
+        currentInventoryIndex = playerHotBarIndex;
+    }
+    public void SetMainInvActive()
+    {
+        currentInventoryIndex = playerInventoryIndex;
+    }
     public int GetChestInventory(Inventory inv)
     {
         int index = 0;
@@ -75,7 +83,7 @@ public class InventoryManager : MonoBehaviour
     private void Start()
     {
         EventManager.instance.OnItemAddedToInventory += AddToInventory;
-        EventManager.instance.OnInventoryChanged += swapActivePlayerInventory;
+        //EventManager.instance.OnInventoryChanged += swapActivePlayerInventory;
         //EventManager.instance.OnItemAddedToInventory += UIManager.instance.updateInventoryUIEventHandler;
 
     }
@@ -87,7 +95,15 @@ public class InventoryManager : MonoBehaviour
     public void AddToInventory(object sender, EventManager.OnItemAddedToInventoryArgs e)
     {
         if (currentInventoryIndex > 1)
-            currentInventoryIndex = playerHotBarIndex;
+        {
+            if (!activeInventories[playerHotBarIndex].isFull())
+                currentInventoryIndex = playerHotBarIndex;
+            else if (!activeInventories[playerInventoryIndex].isFull())
+                currentInventoryIndex = playerInventoryIndex;
+            else //all inventories full, do not add
+                return;
+        }
+        
         if (UIManager.instance.activeInventory != activeInventories[currentInventoryIndex])
         {
             UIManager.instance.swapActiveInventory();

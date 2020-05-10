@@ -12,6 +12,7 @@ public class Inventory : ScriptableObject
     private int size;
     private int lastUsedIndex;
     private int usedSlots;
+    private bool full;
     public void initialize(int relSize = -1)
     {
         if (relSize != -1) size = relSize;
@@ -19,6 +20,10 @@ public class Inventory : ScriptableObject
         usedSlots = 0;
         items = new List<ItemObject>();
         initializeInventory();
+    }
+    public bool isFull()
+    {
+        return false;
     }
     private void initializeInventory()
     {

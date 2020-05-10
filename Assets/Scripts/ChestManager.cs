@@ -12,7 +12,7 @@ public class ChestManager : MonoBehaviour
     [SerializeField]
     int defaultChestInventorySize;
     [SerializeField]
-    LayoutGroup chestInventoryUI;
+    ChestInventoryUIComponents chestInventoryUI;
     private bool hovering;
     [SerializeField]
     public int chestId;
@@ -24,7 +24,9 @@ public class ChestManager : MonoBehaviour
     {
         if(hovering)
         {
-            UIManager.instance.ToggleChestUIOpen(chestInventoryUI,this);
+            chestInventoryUI.ToggleChest(this);
+            //UIManager.instance.ToggleChestUIOpen(chestInventoryUI,this);
+            //chestInventoryUI.
         }
     }
     private void OnMouseExit()

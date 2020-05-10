@@ -12,8 +12,12 @@ public class EventManager : MonoBehaviour
     {
         public ItemObject item;
     }
+    public class OnInventoryActionArgs : EventArgs
+    {
+        public InputAction.CallbackContext context;
+    }
     public event EventHandler OnRightClick;
-    public event EventHandler OnInventoryChanged;
+    public event EventHandler<OnInventoryActionArgs> OnInventoryAction;
     private void Awake()
     {
         if(instance != null && instance!=this)
@@ -32,9 +36,9 @@ public class EventManager : MonoBehaviour
         if (!context.performed) return;
         OnRightClick?.Invoke(this, EventArgs.Empty);
     }
-    public void fireInventorySwitchedEvent(InputAction.CallbackContext context)
+    public void fireInventoryActionEvent(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
-        OnInventoryChanged?.Invoke(this, EventArgs.Empty);
+        OnInventoryAction?.Invoke(this, new OnInventoryActionArgs { context = context } );
     }
 }

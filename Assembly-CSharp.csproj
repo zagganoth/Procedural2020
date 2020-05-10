@@ -106,7 +106,6 @@
     <Compile Include="Assets\External\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
     <Compile Include="Assets\External\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
     <Compile Include="Assets\Input\InputMaster.cs" />
-    <Compile Include="Assets\Scriptable Objects\Definitions\HotbarUIComponents.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\ItemObject.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\ToolObject.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\WeaponObject.cs" />
@@ -119,13 +118,13 @@
     <Compile Include="Assets\Scripts\EnemyAI.cs" />
     <Compile Include="Assets\Scripts\EnemySpawner.cs" />
     <Compile Include="Assets\Scripts\EventManager.cs" />
+    <Compile Include="Assets\Scripts\HotbarUIComponents.cs" />
     <Compile Include="Assets\Scripts\Inventory.cs" />
     <Compile Include="Assets\Scripts\InventoryManager.cs" />
     <Compile Include="Assets\Scripts\Items\Item.cs" />
     <Compile Include="Assets\Scripts\MainInventoryUIComponents.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
-    <Compile Include="Assets\Scripts\UIManager_Backup.cs" />
     <Compile Include="Assets\Scripts\WorldGenerator.cs" />
     <Compile Include="Assets\Statemachines\Enemy\ChaseBehavior.cs" />
     <Compile Include="Assets\Systems\AttackSystem.cs" />

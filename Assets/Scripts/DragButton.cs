@@ -10,13 +10,17 @@ public class DragButton : MonoBehaviour, IBeginDragHandler,
     [SerializeField]
     public int slotIndex;
     [SerializeField]
-    LayoutGroup parentInventory;
+    BaseInventoryUIComponents parentInventory;
     private Image imageSprite;
     private bool isBeingDragged;
     private void Awake()
     {
         imageSprite = GetComponent<Image>();
         isBeingDragged = false;
+        if(parentInventory == null)
+        {
+            parentInventory = GetComponentInParent<BaseInventoryUIComponents>();
+        }
     }
     public void OnBeginDrag(PointerEventData eventData)
     {

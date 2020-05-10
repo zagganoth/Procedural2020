@@ -10,15 +10,6 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager instance;
     [SerializeField]
-    public LayoutGroup hotbar;
-    [SerializeField]
-    public LayoutGroup mainInventory;
-    [SerializeField]
-    public LayoutGroup chestInventory;
-    private List<DragButton> slots;
-    private List<Image> slotImages;
-    private List<Image> slotBackgrounds;
-    [SerializeField]
     public DraggableObject draggable;
     [SerializeField]
     Sprite activeSlotSprite;
@@ -28,14 +19,13 @@ public class UIManager : MonoBehaviour
     public Inventory activeInventory;
     [SerializeField]
     List<ItemObject> currentInvItems;
-    public LayoutGroup activeInventoryUI;
     public int activeSlotIndex;
     public bool dragging;
     [SerializeField]
     private BaseInventoryUIComponents hotbarUI;
+    [SerializeField]
     private BaseInventoryUIComponents mainInventoryUI;
-    private BaseInventoryUIComponents chestInventoryUI;
-    public BaseInventoryUIComponents currentInventoryUI;
+    public BaseInventoryUIComponents activeInventoryUI;
     private void Awake()
     {
         if(instance != null && instance!=this)
@@ -43,129 +33,62 @@ public class UIManager : MonoBehaviour
             return;
         }
         instance = this;
-        activeInventory = InventoryManager.instance.getActiveInventory();
-        SetActiveInventoryUI(hotbar);
-
     }
     private void Start()
     {
         activeSlotIndex = 0;
         dragging = false;
         StartCoroutine(delayedStart());
-
     }
     IEnumerator delayedStart()
     {
         //Using this to ensure that the UI is always updated AFTER the inventory is updated with the item
         yield return new WaitForSeconds(0.2f);
+        SetHotBarActive();
         EventManager.instance.OnItemAddedToInventory += updateInventoryUIEventHandler;
         //EventManager.instance.OnInventoryChanged += toggleFullInventoryEventHandler;
-        currentInventoryUI = hotbarUI; 
     }
-    public void toggleFullInventoryEventHandler(object sender, EventArgs e)
+    public void SetHotBarActive()
     {
-        toggleFullInventory();
+        SetActiveInventoryUI(hotbarUI);
     }
-    public void toggleFullInventory()
-    {
-        GameObject parent = mainInventory.transform.parent.gameObject;
-
-        parent.SetActive(!parent.activeSelf);
-
-        swapActiveInventory();
-            
-    }
+    
     public void swapActiveInventory()
     {
-        if (activeInventoryUI == hotbar)
+        if (activeInventoryUI == hotbarUI)
         {
-            SetActiveInventoryUI(mainInventory);
-        }
-        else if (activeInventoryUI == mainInventory)
-        {
-            SetActiveInventoryUI(hotbar);
+            SetActiveInventoryUI(mainInventoryUI);
         }
         else
         {
-            SetActiveInventoryUI(hotbar);
+            SetActiveInventoryUI(hotbarUI);
         }
-    }
 
-    public void ToggleChestUIOpen(LayoutGroup chestInv,ChestManager chest = null)
-    {
-        GameObject parent = chestInventory.transform.parent.gameObject;
-        if(parent.activeSelf)
-        {
-            parent.SetActive(false);
-            SetActiveInventoryUI(hotbar);
-        }
-        else
-        {
-            parent.SetActive(true);
-            SetActiveInventoryUI(chestInv, chest);
-        }
     }
-    public void SetActiveInventoryUI(LayoutGroup inventory,ChestManager chest = null)
+    public void SetActiveInventoryUI(BaseInventoryUIComponents inventoryUI,ChestManager chest = null)
     {
         InventoryManager invstance = InventoryManager.instance;
-        activeInventoryUI = inventory;
-        if (activeInventoryUI.GetInstanceID() == hotbar.GetInstanceID())
-        {
-            activeInventory = invstance.activeInventories[invstance.playerHotBarIndex];
-        }
-        else if (activeInventoryUI.GetInstanceID() == mainInventory.GetInstanceID())
-        {
-            activeInventory = invstance.activeInventories[invstance.playerInventoryIndex];
-        }
-        else if(activeInventoryUI.GetInstanceID() == chestInventory.GetInstanceID())
-        {
-            if (chest == null) activeInventory = invstance.activeInventories[invstance.lastActiveChest];
-            else
-            {
-                if (chest.chestId == -1)
-                {
-                    int chestId = invstance.GetChestInventory(chest.chestInventory);
-                    chest.chestId = chestId;
-                }
-                activeInventory = chest.chestInventory;
-            }
-        }
+        activeInventoryUI = inventoryUI;
+        activeInventory = activeInventoryUI.GetRelevantInventory();
         invstance.SetActiveInventory(activeInventory);
-        currentInvItems = activeInventory.items;
-        slotImages = new List<Image>();
-        slotBackgrounds = new List<Image>();
-        slots = new List<DragButton>();
-        //Button[] slots;
-        slots.AddRange(inventory.GetComponentsInChildren<DragButton>());
-        Image[] childComponents;
-        int index = 0;
-        foreach (var slot in slots)
-        {
-            slot.slotIndex = index;
-            childComponents = slot.GetComponentsInChildren<Image>(includeInactive: true);
-            slotImages.Add(childComponents[1]);
-            slotBackgrounds.Add(childComponents[0]);
-            index++;
-        }
         updateInventoryUI();
     }
     private void SetActiveSlotUI(int index)
     {
         if (index == activeSlotIndex)
         {
-            slotBackgrounds[index].sprite = activeSlotSprite;
+            activeInventoryUI.slotBackgrounds[index].sprite = activeSlotSprite;
         }
         else
         {
-            slotBackgrounds[index].sprite = defaultSlotSprite;
+            activeInventoryUI.slotBackgrounds[index].sprite = defaultSlotSprite;
         }
     }
     public void updateInventoryUI()
     {
         int index = 0;
         bool usingHotbar = InventoryManager.instance.UsingHotBar();
-
-        foreach (var slot in slotImages)
+        foreach (var slot in activeInventoryUI.slotImages)
         {
             if (index >= activeInventory.getSize()
                 || activeInventory.items[index].image == null)
@@ -179,13 +102,12 @@ public class UIManager : MonoBehaviour
             }
             if (usingHotbar) SetActiveSlotUI(index);
             index++;
-
         }
     }
     public void OnScroll(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
-        SetActiveInventoryUI(hotbar);
+        SetActiveInventoryUI(hotbarUI);
         Vector2 input = context.ReadValue<Vector2>();
         if(input.y > 0)
         {
@@ -201,12 +123,13 @@ public class UIManager : MonoBehaviour
         }
         updateInventoryUI();
     }
+    
     public void updateInventoryUIEventHandler(object sender, EventManager.OnItemAddedToInventoryArgs e)//Inventory inventory)
     {
         updateInventoryUI();
     }
 
-    public void ItemClicked(int itemIndex, LayoutGroup parentInventory)
+    public void ItemClicked(int itemIndex, BaseInventoryUIComponents parentInventory)
     {
         SetActiveInventoryUI(parentInventory);
         //if dragging an item currently
