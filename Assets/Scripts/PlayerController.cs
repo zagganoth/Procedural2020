@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class PlayerController : MonoBehaviour
 {
@@ -22,6 +23,10 @@ public class PlayerController : MonoBehaviour
     private bool swinging;
     [SerializeField]
     PlayerInventoryUI inventoryUI;
+    [SerializeField]
+    Tilemap structureOverMap;
+    private bool structureDisabled;
+    private Rigidbody2D rb;
     enum direction
     {
         up,
@@ -41,6 +46,8 @@ public class PlayerController : MonoBehaviour
         equippedItemObject = equippedItem.item;
         swingWeaponAnimator = equippedItem.gameObject.GetComponent<Animator>();
         swinging = false;
+        structureDisabled = false;
+        rb = GetComponent<Rigidbody2D>();
     }
     private void initializeDirectionBools()
     {
@@ -75,6 +82,7 @@ public class PlayerController : MonoBehaviour
         {
             currentDirection = direction.left;
         }
+        rb.velocity = inputVector;
         characterSprite.sprite = directionalSprites[(int)currentDirection];
     }
     public ItemObject getEquippedItem()
@@ -105,7 +113,17 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        transform.position += new Vector3(inputVector.x, inputVector.y, 0) * Time.deltaTime;
+        //transform.position += new Vector3(inputVector.x, inputVector.y, 0) * Time.deltaTime;
+        if (structureOverMap.GetTile(Vector3Int.FloorToInt(transform.position)) != null)
+        {
+            structureOverMap.gameObject.SetActive(false);
+            structureDisabled = true;
+        }
+        else if(structureDisabled)
+        {
+            structureDisabled = false;
+            structureOverMap.gameObject.SetActive(true);
 
+        }
     }
 }

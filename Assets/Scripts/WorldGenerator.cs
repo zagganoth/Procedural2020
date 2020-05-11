@@ -1,6 +1,8 @@
 ﻿using CielaSpike;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -58,6 +60,13 @@ public class WorldGenerator : MonoBehaviour
     CameraFollow camFollow;
     float3 playerPos;
     NoiseParameters nosP;
+    [SerializeField]
+    List<Tilemap> structureTilemaps;
+    [SerializeField]
+    List<Structure> structures;
+    [SerializeField]
+    List<chunkCenter> chunksToGenerate;
+    System.Random random;
     enum tileNames : int
     {
         dirt = 0,
@@ -67,6 +76,7 @@ public class WorldGenerator : MonoBehaviour
         shallow_water,
         tilled_dirt
     };
+    [Serializable]
     readonly struct chunkCenter
     {
         public readonly int boundsCenterX;
@@ -83,10 +93,12 @@ public class WorldGenerator : MonoBehaviour
     {
         camFollow = CameraFollow.instance;
         loadedChunks = new HashSet<chunkCenter>();
+        loadedChunks.Add(new chunkCenter(qInit.x,qInit.y));
         //noise = new Noise(seed, frequency, amplitude, lacunarity, persistence, octaves);
         chunkCenter origin = new chunkCenter(qInit.x, qInit.y);
         nosP = new NoiseParameters(seed, frequency, amplitude, lacunarity, persistence, octaves);
         seed = (int)UnityEngine.Random.Range(-123456789f, 123456789f);
+        random = new System.Random();
         GenerateMap(new List<chunkCenter> { origin },defaultChunkSize);
         StartCoroutine(chunkManager());
         this.StartCoroutineAsync(chunkCuller());
@@ -133,7 +145,6 @@ public class WorldGenerator : MonoBehaviour
             nosP,
             NoiseValues
         );
-        //jobHandleList.Add(job.Schedule());
         noiseLists.Add(NoiseValues);
         return job.Schedule();
     }
@@ -163,6 +174,7 @@ public class WorldGenerator : MonoBehaviour
         int boundsCenterX, boundsCenterY;
         foreach (var NoiseValues in noiseLists)
         {
+            GenerateStructures(cCenters[noiseListNum],NoiseValues.ToList());
             boundsCenterY = cCenters[noiseListNum].boundsCenterY;
             boundsCenterX = cCenters[noiseListNum++].boundsCenterX;
             index = 0;
@@ -182,9 +194,38 @@ public class WorldGenerator : MonoBehaviour
 
                 }
             }
+
             tim.SetTiles(positionArray, tileArray);
             NoiseValues.Dispose();
 
+        }
+    }
+    private void GenerateStructures(chunkCenter cCenter, List<float> noiseValues)
+    {
+        int randDex = random.Next(noiseValues.Count);
+        Debug.Log(noiseValues[randDex]);
+        if(noiseValues[randDex] > 0.8f)
+        {
+            int index = random.Next(structures.Count);
+            //structures[index]
+            int ind = 0;
+            List<Vector3List> positionLists = new List<Vector3List>();
+            foreach(var positionList in structures[index].positionLists)
+            {
+                positionLists.Add(new Vector3List(new List<Vector3Int>()));
+                foreach(var vector in positionList.list)
+                {
+                    positionLists[ind].list.Add(vector + new Vector3Int(cCenter.boundsCenterX, cCenter.boundsCenterY, 0));
+                }
+                ind++;
+            }
+            int ind2 = 0;
+            foreach (var tilemap in structureTilemaps)
+            {
+                //structures[index].tileLists
+                tilemap.SetTiles(positionLists[ind2].list.ToArray(),structures[index].tileLists[ind2].list.ToArray());
+                ind2++;
+            }
         }
     }
     private void checkForChunks(List<chunkCenter> chunksToGenerate, Vector3 playerPos,chunkCenter qNE, chunkCenter qE, chunkCenter qW, chunkCenter qSE, chunkCenter qS, chunkCenter qN, chunkCenter qNW, chunkCenter qSW)
@@ -219,6 +260,7 @@ public class WorldGenerator : MonoBehaviour
         {
             //qN
             chunksToGenerate.Add(qN);
+            loadedChunks.Add(qN);
         }
         if (!loadedChunks.Contains(qNW))// && playerPos.y > qInit.y + defaultChunkSize / 4 && playerPos.x < qInit.x - defaultChunkSize / 4)
         {
@@ -303,27 +345,48 @@ public class WorldGenerator : MonoBehaviour
         }
 
     }
+    private void chunkManagerHelper(Vector2Int lastGenerationPosition,chunkCenter qNE, chunkCenter qE, chunkCenter qW, chunkCenter qSE, chunkCenter qS, chunkCenter qN, chunkCenter qNW, chunkCenter qSW)
+    {
+        checkForChunks(chunksToGenerate, playerPos, qNE, qE, qW, qSE, qS, qN, qNW, qSW);
+        GenerateMap(chunksToGenerate, defaultChunkSize);
+        lastGenerationPosition = new Vector2Int((int)playerPos.x, (int)playerPos.y);
+    }
     // Update is called once per frame
     private IEnumerator chunkManager()
     {
+        Vector2Int lastGenerationPosition = new Vector2Int((int)camFollow.playerPos.x,(int)camFollow.playerPos.y);
+        chunkCenter qNE = new chunkCenter(qInit.x + defaultChunkSize, qInit.y + defaultChunkSize);
+        chunkCenter qE = new chunkCenter(qInit.x + defaultChunkSize, qInit.y);
+        chunkCenter qW = new chunkCenter(qInit.x - defaultChunkSize, qInit.y);
+        chunkCenter qSE = new chunkCenter(qInit.x + defaultChunkSize, qInit.y - defaultChunkSize);
+        chunkCenter qS = new chunkCenter(qInit.x, qInit.y - defaultChunkSize);
+        chunkCenter qN = new chunkCenter(qInit.x, qInit.y + defaultChunkSize);
+        chunkCenter qNW = new chunkCenter(qInit.x - defaultChunkSize, qInit.y + defaultChunkSize);
+        chunkCenter qSW = new chunkCenter(qInit.x - defaultChunkSize, qInit.y - defaultChunkSize);
+        chunkManagerHelper(lastGenerationPosition, qNE, qE, qW, qSE, qS, qN, qNW, qSW);
         while (true)
         {
             playerPos = camFollow.playerPos;
-            List<chunkCenter> chunksToGenerate = new List<chunkCenter>();
-            chunkCenter qNE = new chunkCenter(qInit.x + defaultChunkSize, qInit.y + defaultChunkSize);
-            chunkCenter qE= new chunkCenter(qInit.x + defaultChunkSize, qInit.y);
-            chunkCenter qW = new chunkCenter(qInit.x - defaultChunkSize, qInit.y);
-            chunkCenter qSE= new chunkCenter(qInit.x + defaultChunkSize, qInit.y - defaultChunkSize);
-            chunkCenter qS = new chunkCenter(qInit.x, qInit.y - defaultChunkSize);
-            chunkCenter qN = new chunkCenter(qInit.x, qInit.y + defaultChunkSize);
-            chunkCenter qNW = new chunkCenter(qInit.x - defaultChunkSize, qInit.y + defaultChunkSize);
-            chunkCenter qSW = new chunkCenter(qInit.x - defaultChunkSize, qInit.y - defaultChunkSize);
-            checkForChunks(chunksToGenerate, playerPos, qNE, qE, qW, qSE, qS, qN, qNW, qSW);
-            if(Vector2Int.Distance(qInit,new Vector2Int((int)playerPos.x,(int)playerPos.y)) > defaultChunkSize/2)
+            //List<chunkCenter> chunksToGenerate = new List<chunkCenter>();
+            chunksToGenerate = new List<chunkCenter>();
+            qNE = new chunkCenter(qInit.x + defaultChunkSize, qInit.y + defaultChunkSize);
+            qE = new chunkCenter(qInit.x + defaultChunkSize, qInit.y);
+            qW = new chunkCenter(qInit.x - defaultChunkSize, qInit.y);
+            qSE = new chunkCenter(qInit.x + defaultChunkSize, qInit.y - defaultChunkSize);
+            qS = new chunkCenter(qInit.x, qInit.y - defaultChunkSize);
+            qN = new chunkCenter(qInit.x, qInit.y + defaultChunkSize);
+            qNW = new chunkCenter(qInit.x - defaultChunkSize, qInit.y + defaultChunkSize);
+            qSW = new chunkCenter(qInit.x - defaultChunkSize, qInit.y - defaultChunkSize);
+
+
+            if (Vector2Int.Distance(qInit,new Vector2Int((int)playerPos.x,(int)playerPos.y)) > defaultChunkSize/2)
             {
                 changeCenterChunk(playerPos,qNE, qE, qW, qSE, qS, qN, qNW, qSW);
             }
-            GenerateMap(chunksToGenerate,defaultChunkSize);
+            if (Vector2Int.Distance(lastGenerationPosition, new Vector2Int((int)playerPos.x, (int)playerPos.y)) > defaultChunkSize / 4)
+            {
+                chunkManagerHelper(lastGenerationPosition, qNE, qE, qW, qSE, qS, qN, qNW, qSW);
+            }
             yield return new WaitForSeconds(1f);
         }
     }

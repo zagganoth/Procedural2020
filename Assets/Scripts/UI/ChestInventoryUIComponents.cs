@@ -9,6 +9,7 @@ public class ChestInventoryUIComponents : BaseInventoryUIComponents
     private int chestId;
     private List<ChestManager> chests;
     //private ChestManager activeChest;
+
     protected override void childConstructor()
     {
         chests = new List<ChestManager>();

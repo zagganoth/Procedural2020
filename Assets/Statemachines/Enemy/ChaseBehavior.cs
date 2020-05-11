@@ -10,6 +10,7 @@ public class ChaseBehavior : StateMachineBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         playerPos = CameraFollow.instance.mainPlayer.transform;
+        
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -18,11 +19,12 @@ public class ChaseBehavior : StateMachineBehaviour
         animator.transform.position = Vector2.MoveTowards(animator.transform.position, playerPos.position,speed * Time.deltaTime);
     }
 
+   
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-    //override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        animator.transform.position = animator.transform.position;
+    }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
     //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
