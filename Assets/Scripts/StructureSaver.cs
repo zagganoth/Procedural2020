@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -23,6 +24,7 @@ public class StructureSaver : MonoBehaviour
             findStructureTiles(tilemap, index);
             index++;
         }
+        EditorUtility.SetDirty(destStructure);
     }
     void findStructureTiles(Tilemap structureTilemap,int tilemapIndex)
     {

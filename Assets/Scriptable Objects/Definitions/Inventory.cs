@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.UI;
-[CreateAssetMenu(fileName = "New Inventory", menuName="Inventory System/Inventory")]
+[CreateAssetMenu(fileName = "New Inventory", menuName="Custom/Inventory System/Inventory")]
 public class Inventory : ScriptableObject
 {
     [SerializeField]

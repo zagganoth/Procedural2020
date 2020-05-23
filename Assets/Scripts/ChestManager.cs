@@ -16,6 +16,10 @@ public class ChestManager : MonoBehaviour
     private bool hovering;
     [SerializeField]
     public int chestId;
+    Sprite defaultSprite;
+    [SerializeField]
+    Sprite openSprite;
+    SpriteRenderer sr;
     private void OnMouseEnter()
     {
         hovering = true;
@@ -25,6 +29,10 @@ public class ChestManager : MonoBehaviour
         if(hovering)
         {
             chestInventoryUI.ToggleChest(this);
+            if (sr.sprite != openSprite)
+                sr.sprite = openSprite;
+            else
+                sr.sprite = defaultSprite;
         }
     }
     private void OnMouseExit()
@@ -38,9 +46,19 @@ public class ChestManager : MonoBehaviour
         chestInventory.initialize(defaultChestInventorySize);
         //inventoryItems = chestInventory.items;
     }
+    private void Awake()
+    {
+        sr = GetComponent<SpriteRenderer>();
+        defaultSprite = sr.sprite;
+    
+    }
     // Start is called before the first frame update
     void Start()
     {
+        if(chestInventoryUI == null)
+        {
+            chestInventoryUI = UIParent.instance.GetComponentInChildren<ChestInventoryUIComponents>(includeInactive:true);
+        }
         EventManager.instance.OnRightClick += OnRightClick;
         initializeChestInventory();
         hovering = false;

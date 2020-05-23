@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     Item equippedItem;
     Animator swingWeaponAnimator;
     ItemObject equippedItemObject;
-
+    SpriteRenderer equippedItemSprite;
     SpriteRenderer characterSprite;
     [SerializeField]
     Sprite[] directionalSprites;
@@ -27,6 +27,9 @@ public class PlayerController : MonoBehaviour
     Tilemap structureOverMap;
     private bool structureDisabled;
     private Rigidbody2D rb;
+    private bool colliding;
+    [SerializeField]
+    public int placeRange;
     enum direction
     {
         up,
@@ -39,15 +42,22 @@ public class PlayerController : MonoBehaviour
     Dictionary<direction, Vector3> directionVectors;
     private void Awake()
     {
-        //moveSpeed /= 100;
+        //moveSpeed *= 50;
         initializeDirectionBools();
         currentDirection = direction.down;
         characterSprite = GetComponent<SpriteRenderer>();
         equippedItemObject = equippedItem.item;
         swingWeaponAnimator = equippedItem.gameObject.GetComponent<Animator>();
+        equippedItemSprite = equippedItem.gameObject.GetComponent<SpriteRenderer>();
+        EventManager.instance.OnItemAddedToInventory += changeEquippedItem;
         swinging = false;
         structureDisabled = false;
         rb = GetComponent<Rigidbody2D>();
+    }
+    private void changeEquippedItem(object sender, EventManager.OnItemAddedToInventoryArgs e)
+    {
+        equippedItemObject = e.item;
+        equippedItem.item = e.item;
     }
     private void initializeDirectionBools()
     {
@@ -64,6 +74,7 @@ public class PlayerController : MonoBehaviour
     }
     public void OnMove(InputAction.CallbackContext context)
     {
+        //if (context.performed) return;
         Vector2 input = context.ReadValue<Vector2>();
         inputVector = input * moveSpeed;
         if (input.y > 0)
@@ -82,12 +93,18 @@ public class PlayerController : MonoBehaviour
         {
             currentDirection = direction.left;
         }
-        rb.velocity = inputVector;
+
         characterSprite.sprite = directionalSprites[(int)currentDirection];
+        rb.velocity = inputVector;
     }
     public ItemObject getEquippedItem()
     {
-        return inventoryUI.GetActiveItem();
+        ItemObject activeItem = inventoryUI.GetActiveItem();
+        if(activeItem != null && activeItem.image != equippedItemSprite.sprite)
+        {
+            equippedItemSprite.sprite = activeItem.image;
+        }
+        return activeItem;
     }
     public void OnSwing(InputAction.CallbackContext context)
     {
@@ -104,7 +121,14 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-    
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        colliding = true;
+    }
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        rb.velocity = inputVector;
+    }
     IEnumerator endSwing(direction dir)
     {
         yield return new WaitForSeconds(0.2f);
@@ -113,7 +137,9 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        //transform.position += new Vector3(inputVector.x, inputVector.y, 0) * Time.deltaTime;
+        //rb.velocity = inputVector * Time.deltaTime;
+        //transform.position += ;
+        //if(!colliding)rb.velocity = new Vector3(inputVector.x, inputVector.y, 0) * Time.deltaTime;
         if (structureOverMap.GetTile(Vector3Int.FloorToInt(transform.position)) != null)
         {
             structureOverMap.gameObject.SetActive(false);

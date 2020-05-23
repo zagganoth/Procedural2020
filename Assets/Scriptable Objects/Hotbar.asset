@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Hotbar
   m_EditorClassIdentifier: 
   items:
-  - {fileID: 11400000, guid: 3756fe0a62a654349b7e4e2da3562df4, type: 2}
-  - {fileID: 11400000, guid: 3756fe0a62a654349b7e4e2da3562df4, type: 2}
-  - {fileID: 11400000, guid: 3756fe0a62a654349b7e4e2da3562df4, type: 2}
-  - {fileID: 11400000, guid: 3756fe0a62a654349b7e4e2da3562df4, type: 2}
-  - {fileID: 11400000, guid: 3756fe0a62a654349b7e4e2da3562df4, type: 2}
-  - {fileID: 11400000, guid: 3756fe0a62a654349b7e4e2da3562df4, type: 2}
-  - {fileID: 11400000, guid: 3756fe0a62a654349b7e4e2da3562df4, type: 2}
-  - {fileID: 11400000, guid: 3756fe0a62a654349b7e4e2da3562df4, type: 2}
+  - {fileID: 11400000, guid: 7df1e58f908ac2949a4512de12b244f6, type: 2}
+  - {fileID: 11400000, guid: 72ae52e55c82cae4384a03cbd6de66b8, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   size: 8

@@ -8,15 +8,22 @@ public class EventManager : MonoBehaviour
 {
     public static EventManager instance;
     public event EventHandler<OnItemAddedToInventoryArgs> OnItemAddedToInventory;
+    //private HashSet<ItemObject> subscripInitialized;
     public class OnItemAddedToInventoryArgs : EventArgs
     {
         public ItemObject item;
+        public PlayerController playerRef;
     }
     public class OnInventoryActionArgs : EventArgs
     {
         public InputAction.CallbackContext context;
     }
-    public event EventHandler OnRightClick;
+    public class OnRightClickArgs : EventArgs
+    {
+        public InputAction.CallbackContext context;
+        public Vector3 clickPosition;
+    }
+    public event EventHandler<OnRightClickArgs> OnRightClick;
     public event EventHandler<OnInventoryActionArgs> OnInventoryAction;
     private void Awake()
     {
@@ -26,15 +33,23 @@ public class EventManager : MonoBehaviour
             return;
         }
         instance = this;
+        //subscripInitialized = new HashSet<ItemObject>();
     }
-    public void fireAddItemToInventoryEvent(ItemObject item)
+    public void fireAddItemToInventoryEvent(ItemObject item, PlayerController player)
     {
-        OnItemAddedToInventory?.Invoke(this,new OnItemAddedToInventoryArgs { item = item });
+        /*if (!subscripInitialized.Contains(item))
+        {
+            item.subscribeToEvents();
+            subscripInitialized.Add(item);
+        }*/
+        OnItemAddedToInventory?.Invoke(this,new OnItemAddedToInventoryArgs { item = item, playerRef = player });
     }
     public void fireRightClickedEvent(InputAction.CallbackContext context)
     {
+
+        //Debug.Log(context);
         if (!context.performed) return;
-        OnRightClick?.Invoke(this, EventArgs.Empty);
+        OnRightClick?.Invoke(this, new OnRightClickArgs { context = context, clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition) });  ;
     }
     public void fireInventoryActionEvent(InputAction.CallbackContext context)
     {

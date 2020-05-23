@@ -10,19 +10,23 @@ public class MainInventoryUIComponents : BaseInventoryUIComponents
     {
         activeInventory.initialize();
     }
+
+    private void Awake()
+    {
+        EventManager.instance.OnInventoryAction += OnInventoryOpen;
+    }
     protected override void Start()
     {
         base.Start();
+        ToggleParent();
     }
     public override Inventory GetRelevantInventory()
     {
         return activeInventory;
     }
     
-    public void OnInventoryOpen(InputAction.CallbackContext context)
+    public void OnInventoryOpen(object sender, EventManager.OnInventoryActionArgs e)//InputAction.CallbackContext context)
     {
-        Start();
-        if (!context.performed) return;
         ToggleParent();
     }
 }

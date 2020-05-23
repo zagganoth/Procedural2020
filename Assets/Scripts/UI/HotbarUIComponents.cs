@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
 
@@ -11,18 +13,29 @@ public class HotbarUIComponents : BaseInventoryUIComponents
     protected Sprite defaultSlotSprite;
     [SerializeField]
     Sprite activeSlotSprite;
+    [SerializeField]
+    Tilemap wallTilemap;
+    PlayerController playerRef;
     protected override void childConstructor()
     {
         activeSlotIndex = 0;
         activeInventory.initialize();
-
+        playerRef = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
     }
     protected override void Start()
     {
         base.Start();
         defaultSlotSprite = slotBackgrounds[0].sprite;
         slotBackgrounds[activeSlotIndex].sprite = activeSlotSprite;
+        EventManager.instance.OnRightClick += placeBlock;
         updateUI();
+    }
+    public void placeBlock(object sender, EventManager.OnRightClickArgs e)
+    {
+        if (activeInventory.items[activeSlotIndex] != null && activeInventory.items[activeSlotIndex].canBePlaced())
+        {
+            activeInventory.items[activeSlotIndex].use(e.clickPosition, wallTilemap,playerRef);
+        }
     }
     public override Inventory GetRelevantInventory()
     {

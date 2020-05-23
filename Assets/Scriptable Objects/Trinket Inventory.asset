@@ -9,17 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9b1db0b9e5548f4ba4c8cbeee577824, type: 3}
-  m_Name: Structure1
+  m_Script: {fileID: 11500000, guid: 46fe6f5d6e817ca409f193b9094698d3, type: 3}
+  m_Name: Trinket Inventory
   m_EditorClassIdentifier: 
-  tilemapSizes:
-  - x: 10
-    y: 6
-  - x: 12
-    y: 7
-  - x: 14
-    y: 9
-  tilemaps:
+  items:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  size: 8

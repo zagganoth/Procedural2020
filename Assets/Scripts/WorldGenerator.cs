@@ -30,7 +30,11 @@ public readonly struct NoiseParameters
 public class WorldGenerator : MonoBehaviour
 {
     [SerializeField]
-    Tilemap tim;
+    float structuresOdds;
+    [SerializeField]
+    Tilemap groundTilemap;
+    [SerializeField]
+    Tilemap waterTilemap;
     [SerializeField]
     TileBase[] tiles;
     Noise noise;
@@ -96,8 +100,9 @@ public class WorldGenerator : MonoBehaviour
         loadedChunks.Add(new chunkCenter(qInit.x,qInit.y));
         //noise = new Noise(seed, frequency, amplitude, lacunarity, persistence, octaves);
         chunkCenter origin = new chunkCenter(qInit.x, qInit.y);
+        //seed = (int)UnityEngine.Random.Range(-123456789f, 123456789f);
         nosP = new NoiseParameters(seed, frequency, amplitude, lacunarity, persistence, octaves);
-        seed = (int)UnityEngine.Random.Range(-123456789f, 123456789f);
+
         random = new System.Random();
         GenerateMap(new List<chunkCenter> { origin },defaultChunkSize);
         StartCoroutine(chunkManager());
@@ -162,14 +167,17 @@ public class WorldGenerator : MonoBehaviour
             }
             
         }
+
         JobHandle.CompleteAll(jobHandleList);
         StartCoroutine(SetMapTiles(noiseLists, cCenters, size));
     } 
     private IEnumerator SetMapTiles(List<NativeArray<float>> noiseLists, List<chunkCenter> cCenters, int size)
     {
         yield return null;
-        Vector3Int[] positionArray = new Vector3Int[size * size];
-        TileBase[] tileArray = new TileBase[size * size];
+        Vector3Int[] groundPositionArray = new Vector3Int[size * size];
+        TileBase[] groundTileArray = new TileBase[size * size];
+        Vector3Int[] waterPositionArray = new Vector3Int[size * size];
+        TileBase[] waterTileArray = new TileBase[size * size];
         int index, noiseListNum = 0;
         int boundsCenterX, boundsCenterY;
         foreach (var NoiseValues in noiseLists)
@@ -184,27 +192,31 @@ public class WorldGenerator : MonoBehaviour
                 {
                     if (NoiseValues[index] < 0.5f)
                     {
-                        tileArray[index] = tiles[(int)tileNames.dirt];
+                        groundTileArray[index] = tiles[(int)tileNames.grass];
+                        groundPositionArray[index] = new Vector3Int(x, y, 0);
                     }
                     else
                     {
-                        tileArray[index] = tiles[(int)tileNames.shallow_water];
+                        waterTileArray[index] = tiles[(int)tileNames.shallow_water];
+                        waterPositionArray[index] = new Vector3Int(x, y, 0);
                     }
-                    positionArray[index++] = new Vector3Int(x, y, 0);
+                    index += 1;
 
                 }
             }
-
-            tim.SetTiles(positionArray, tileArray);
+            groundTilemap.SetTiles(groundPositionArray, groundTileArray);
+            waterTilemap.SetTiles(waterPositionArray, waterTileArray);
             NoiseValues.Dispose();
 
         }
+        groundTilemap.SetTile(new Vector3Int(0, 0, 0), tiles[(int)tileNames.grass]);
+        /*waterTilemap.gameObject.SetActive(false);
+        waterTilemap.gameObject.SetActive(true);*/
     }
     private void GenerateStructures(chunkCenter cCenter, List<float> noiseValues)
     {
         int randDex = random.Next(noiseValues.Count);
-        Debug.Log(noiseValues[randDex]);
-        if(noiseValues[randDex] > 0.8f)
+        if(noiseValues[randDex] > structuresOdds)
         {
             int index = random.Next(structures.Count);
             //structures[index]
@@ -340,7 +352,7 @@ public class WorldGenerator : MonoBehaviour
         {
             for (int y = boundsCenterY - size / 2; y < boundsCenterY + size / 2; y++)
             {
-                tim.SetTile(new Vector3Int(x, y, 0), null);
+                groundTilemap.SetTile(new Vector3Int(x, y, 0), null);
             }
         }
 

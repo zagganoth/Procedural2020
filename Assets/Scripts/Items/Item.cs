@@ -9,7 +9,18 @@ public class Item : MonoBehaviour
 
     [SerializeField]
     public ItemObject item;
-
+    SpriteRenderer sr;
+    private void Awake()
+    {
+        sr = GetComponent<SpriteRenderer>();
+    }
+    private void Start()
+    {
+        if(sr != null && item != null && sr.sprite != item.image)
+        {
+            sr.sprite = item.image;
+        }
+    }
     /*
     private void OnMouseDown()
     {
@@ -18,11 +29,9 @@ public class Item : MonoBehaviour
     }*/
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision);
-        Debug.Log(collision.gameObject.tag);
         if(collision.gameObject.CompareTag("Player"))
         {
-            EventManager.instance.fireAddItemToInventoryEvent(item);
+            EventManager.instance.fireAddItemToInventoryEvent(item,collision.gameObject.GetComponent<PlayerController>());
             Destroy(gameObject);
         }
     }

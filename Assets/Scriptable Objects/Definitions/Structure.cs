@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-[CreateAssetMenu(fileName = "New Structure", menuName = "Structures/Structure")]
+[CreateAssetMenu(fileName = "New Structure", menuName = "Custom/Structures/Structure")]
 public class Structure : ScriptableObject
 {
     [SerializeField]
     public List<Vector3List> positionLists;
     [SerializeField]
     public List<TileList> tileLists;
+    [SerializeField]
+    public float spawnOdds;
 }
 [System.Serializable]
 public class TileList

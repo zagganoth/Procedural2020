@@ -71,9 +71,9 @@ public class @InputMaster : IInputActionCollection, IDisposable
                 {
                     ""name"": ""ArrowKeys"",
                     ""id"": ""76af7063-2760-4461-8d4f-231ff2187ade"",
-                    ""path"": ""2DVector"",
+                    ""path"": ""2DVector(mode=1)"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""Scale,Clamp(min=-1,max=1)"",
                     ""groups"": """",
                     ""action"": ""Move"",
                     ""isComposite"": true,
