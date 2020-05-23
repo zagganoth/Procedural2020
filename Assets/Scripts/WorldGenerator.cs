@@ -58,7 +58,7 @@ public class WorldGenerator : MonoBehaviour
     [SerializeField]
     int cullDistance;
     //List of flattened chunks, containing all data to be displayed on screen
-    List<List<int>> chunkTiles;
+    List<List<tileNames>> chunkTiles;
     //List of chunk centers
     HashSet<chunkCenter> loadedChunks;
     CameraFollow camFollow;

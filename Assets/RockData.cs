@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class RockData : MonoBehaviour
 {
@@ -10,12 +11,14 @@ public class RockData : MonoBehaviour
     public GameObject projectilePrefab;
     bool incDist;
     bool decDist;
+    Tilemap structureWalls;
     private void Start()
     {
         counter = 0;
         delta = Mathf.PI * 2 / 360;
         incDist = false;
         decDist = false;
+        //structureWalls = GameObject.FindWithTag("StructureWalls").GetComponent<Tilemap>();
     }
     private IEnumerator moveInArc(List<GameObject> projectiles, float smallestAngle, float baseProjectileDistance, Animator animator)
     {
@@ -33,14 +36,14 @@ public class RockData : MonoBehaviour
             counter += delta;
             if(counter>=(Mathf.PI * 2 /360 * 480))
             {
-                Debug.Log("Flip!");
+                //Debug.Log("Flip!");
                 delta = Mathf.Clamp(-delta * 1.5f,-0.02f,0.02f);
                 decDist = false;
                 incDist = true;
             }
             else if(counter <0)
             {
-                Debug.Log("break!");
+                //Debug.Log("break!");
                 delta = delta = Mathf.Clamp(-delta * 1.75f,-0.02f,0.02f);
                 decDist = true;
                 incDist = false;

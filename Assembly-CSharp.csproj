@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Classes\Noise.cs" />
+    <Compile Include="Assets\CleanupTiles.cs" />
     <Compile Include="Assets\Components\InventoryComponent.cs" />
     <Compile Include="Assets\Components\MovementComponent.cs" />
     <Compile Include="Assets\Components\PlayerMovementInputComponent.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Assets\Scripts\EnemyAI.cs" />
     <Compile Include="Assets\Scripts\EnemySpawner.cs" />
     <Compile Include="Assets\Scripts\EventManager.cs" />
+    <Compile Include="Assets\Scripts\Items\EquippedTool.cs" />
     <Compile Include="Assets\Scripts\Items\Item.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\StructureSaver.cs" />

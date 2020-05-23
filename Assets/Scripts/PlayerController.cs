@@ -3,21 +3,27 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-
+public enum direction
+{
+    up,
+    down,
+    left,
+    right
+}
 public class PlayerController : MonoBehaviour
 {
     Vector2 inputVector;
     [SerializeField]
     float moveSpeed;
     [SerializeField]
-    Item equippedItem;
+    EquippedTool equippedTool;
     Animator swingWeaponAnimator;
     ItemObject equippedItemObject;
     SpriteRenderer equippedItemSprite;
     SpriteRenderer characterSprite;
     [SerializeField]
     Sprite[] directionalSprites;
-    public LayerMask enemyLayers;
+
     [SerializeField]
     public int inventoryIndex;
     private bool swinging;
@@ -30,13 +36,7 @@ public class PlayerController : MonoBehaviour
     private bool colliding;
     [SerializeField]
     public int placeRange;
-    enum direction
-    {
-        up,
-        down,
-        left,
-        right
-    }
+
     direction currentDirection;
     Dictionary<direction, string> directionBools;
     Dictionary<direction, Vector3> directionVectors;
@@ -46,19 +46,19 @@ public class PlayerController : MonoBehaviour
         initializeDirectionBools();
         currentDirection = direction.down;
         characterSprite = GetComponent<SpriteRenderer>();
-        equippedItemObject = equippedItem.item;
-        swingWeaponAnimator = equippedItem.gameObject.GetComponent<Animator>();
-        equippedItemSprite = equippedItem.gameObject.GetComponent<SpriteRenderer>();
-        EventManager.instance.OnItemAddedToInventory += changeEquippedItem;
+        //equippedItemObject = equippedItem.item;
+        //swingWeaponAnimator = equippedItem.gameObject.GetComponent<Animator>();
+        //equippedItemSprite = equippedItem.gameObject.GetComponent<SpriteRenderer>();
+        //EventManager.instance.OnItemAddedToInventory += changeEquippedItem;
         swinging = false;
         structureDisabled = false;
         rb = GetComponent<Rigidbody2D>();
     }
-    private void changeEquippedItem(object sender, EventManager.OnItemAddedToInventoryArgs e)
+    /*private void changeEquippedItem(object sender, EventManager.OnItemAddedToInventoryArgs e)
     {
-        equippedItemObject = e.item;
-        equippedItem.item = e.item;
-    }
+        //equippedItemObject = e.item;
+        //equippedItem.item = e.item;
+    }*/
     private void initializeDirectionBools()
     {
         directionBools = new Dictionary<direction, string>();
@@ -97,6 +97,7 @@ public class PlayerController : MonoBehaviour
         characterSprite.sprite = directionalSprites[(int)currentDirection];
         rb.velocity = inputVector;
     }
+    /*
     public ItemObject getEquippedItem()
     {
         ItemObject activeItem = inventoryUI.GetActiveItem();
@@ -105,21 +106,15 @@ public class PlayerController : MonoBehaviour
             equippedItemSprite.sprite = activeItem.image;
         }
         return activeItem;
-    }
+    }*/
     public void OnSwing(InputAction.CallbackContext context)
     {
-
-        if (!context.performed || swinging || getEquippedItem()==null ||!getEquippedItem().canSwing()) return;
-        swingWeaponAnimator.gameObject.SetActive(true);
-        swingWeaponAnimator.SetTrigger(directionBools[currentDirection]);
-        swinging = true;
-        StartCoroutine(endSwing(currentDirection));
-        Collider2D[] collisions = Physics2D.OverlapCircleAll(transform.position + directionVectors[currentDirection], 0.5f,enemyLayers);
-        foreach(Collider2D enemy in collisions)
+        if (!context.performed || swinging)
         {
-            Destroy(enemy.gameObject);
+            swinging = true;
+            equippedTool.Use(currentDirection);
         }
-
+        StartCoroutine(endSwing());
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -129,10 +124,10 @@ public class PlayerController : MonoBehaviour
     {
         rb.velocity = inputVector;
     }
-    IEnumerator endSwing(direction dir)
+    IEnumerator endSwing()
     {
         yield return new WaitForSeconds(0.2f);
-        swingWeaponAnimator.gameObject.SetActive(false);
+        //swingWeaponAnimator.gameObject.SetActive(false);
         swinging = false;
     }
     private void Update()

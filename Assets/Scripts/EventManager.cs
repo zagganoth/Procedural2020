@@ -23,8 +23,14 @@ public class EventManager : MonoBehaviour
         public InputAction.CallbackContext context;
         public Vector3 clickPosition;
     }
+    public class OnCleanupRequiredArgs : EventArgs
+    {
+        public Vector3Int pos;
+    }
     public event EventHandler<OnRightClickArgs> OnRightClick;
     public event EventHandler<OnInventoryActionArgs> OnInventoryAction;
+
+    public event EventHandler<OnCleanupRequiredArgs> OnCleanupRequiredAction;
     private void Awake()
     {
         if(instance != null && instance!=this)
@@ -55,5 +61,10 @@ public class EventManager : MonoBehaviour
     {
         if (!context.performed) return;
         OnInventoryAction?.Invoke(this, new OnInventoryActionArgs { context = context } );
+    }
+    
+    public void fireCleanupTileAction(Vector3 position)
+    {
+        OnCleanupRequiredAction?.Invoke(this, new OnCleanupRequiredArgs { pos = Vector3Int.FloorToInt(position) });
     }
 }

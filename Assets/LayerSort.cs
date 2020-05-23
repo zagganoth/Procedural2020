@@ -38,7 +38,6 @@ public class LayerSort : MonoBehaviour
     }
     private void changeOrder()
     {
-        Debug.Log(transform.position.y);
         renderer.sortingOrder = (int)(sortingOrderBase - transform.position.y - offset);
     }
 }
