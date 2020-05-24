@@ -6,50 +6,50 @@ using System.Linq;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-
-public readonly struct NoiseParameters
+[Serializable]
+public struct NoiseParameters
 {
-    public readonly int sd;
-    public readonly float amp;
-    public readonly float freq;
-    public readonly float pers;
-    public readonly float lac;
-    public readonly int oct;
-    public NoiseParameters(int seed, float amplitude, float frequency, float persistence, float lacunarity, int octaves)
+    //public string name;
+    public  int seed;
+    public  float amplitude;
+    public  float frequency;
+    public float persistence;
+    public  float lacunarity;
+    public  int octaves;
+    public void setSeed(int sd)
     {
-        sd = seed;
-        amp = amplitude;
-        freq = frequency;
-        pers = persistence;
-        lac = lacunarity;
-        oct = octaves;
+        seed = sd;
     }
 }
+public enum tileNames : int
+{
+    dirt = 0,
+    grass,
+    sand,
+    deep_water,
+    shallow_water,
+    tilled_dirt
+};
 public class WorldGenerator : MonoBehaviour
 {
     [SerializeField]
     float structuresOdds;
     [SerializeField]
+    List<Tilemap> tilemaps;
+    /*
     Tilemap groundTilemap;
     [SerializeField]
-    Tilemap waterTilemap;
+    Tilemap waterTilemap;*/
     [SerializeField]
     TileBase[] tiles;
-    Noise noise;
+    //Noise noise;
     [SerializeField]
     int seed;
     [SerializeField]
-    float frequency;
-    [SerializeField]
-    float amplitude;
-    [SerializeField]
-    float lacunarity;
-    [SerializeField]
-    float persistence;
-    [SerializeField]
-    int octaves;
+    bool randomizeSeed;
     [SerializeField]
     int defaultChunkSize;
     [SerializeField]
@@ -63,23 +63,27 @@ public class WorldGenerator : MonoBehaviour
     HashSet<chunkCenter> loadedChunks;
     CameraFollow camFollow;
     float3 playerPos;
-    NoiseParameters nosP;
     [SerializeField]
-    List<Tilemap> structureTilemaps;
+    List<NoiseParameters> noiseParameterLists;
+    int moistureNoiseIndex;
+    int heightNoiseIndex;
     [SerializeField]
-    List<Structure> structures;
+    List<Biome> biomes;
+    /*
+    [SerializeField]
+    NoiseParameters heightmapNoise;
+    [SerializeField]
+    NoiseParameters biomeNoise;*/
+    /*
+    [SerializeField]
+    List<Tilemap> structureTilemaps;*/
+    /*[SerializeField]
+    List<Structure> structures;*/
     [SerializeField]
     List<chunkCenter> chunksToGenerate;
     System.Random random;
-    enum tileNames : int
-    {
-        dirt = 0,
-        grass,
-        sand,
-        deep_water,
-        shallow_water,
-        tilled_dirt
-    };
+    private StructureSaver saver;
+
     [Serializable]
     readonly struct chunkCenter
     {
@@ -91,19 +95,29 @@ public class WorldGenerator : MonoBehaviour
             boundsCenterY = bY;
         }
     }
-
+    private void Awake()
+    {
+        saver = GetComponent<StructureSaver>();
+    }
     // Start is called before the first frame update
     void Start()
     {
         camFollow = CameraFollow.instance;
         loadedChunks = new HashSet<chunkCenter>();
         loadedChunks.Add(new chunkCenter(qInit.x,qInit.y));
-        //noise = new Noise(seed, frequency, amplitude, lacunarity, persistence, octaves);
         chunkCenter origin = new chunkCenter(qInit.x, qInit.y);
-        //seed = (int)UnityEngine.Random.Range(-123456789f, 123456789f);
-        nosP = new NoiseParameters(seed, frequency, amplitude, lacunarity, persistence, octaves);
-
         random = new System.Random();
+        moistureNoiseIndex = 1;
+        heightNoiseIndex = 0;
+        int index = 0;
+        foreach (var nosP in noiseParameterLists)
+        {
+            if (randomizeSeed) nosP.setSeed((int)UnityEngine.Random.Range(-123456789f, 123456789f));
+            /*if (nosP.name == "Moisture") moistureNoiseIndex = index;
+            else if (nosP.name == "Height") heightNoiseIndex = index;*/
+            index++;
+        }   
+
         GenerateMap(new List<chunkCenter> { origin },defaultChunkSize);
         StartCoroutine(chunkManager());
         this.StartCoroutineAsync(chunkCuller());
@@ -139,7 +153,7 @@ public class WorldGenerator : MonoBehaviour
     {
         return false;
     }
-    private JobHandle GenerateNewChunk(chunkCenter c, int size, List<NativeArray<float>> noiseLists)
+    private JobHandle GenerateNewChunk(chunkCenter c, int size, List<NativeArray<float>> noiseLists,NoiseParameters nosP)
     {
         NativeArray<float> NoiseValues = new NativeArray<float>(size * size, Allocator.TempJob);
         GenerateMapJob job = new GenerateMapJob
@@ -158,87 +172,160 @@ public class WorldGenerator : MonoBehaviour
     {
         if (cCenters.Count <= 0) return;
         NativeList<JobHandle> jobHandleList = new NativeList<JobHandle>(Allocator.Temp);
-        List<NativeArray<float>> noiseLists = new List<NativeArray<float>>();
+        List<List<NativeArray<float>>> tileNoiseLists = new List<List<NativeArray<float>>>();
+        int index = 0;
+        foreach(var noise in noiseParameterLists)
+        {
+            tileNoiseLists.Add(new List<NativeArray<float>>());
+        }
         foreach (var c in cCenters)
         {
             if (!chunkExistsOnFile(c))
             {
-                jobHandleList.Add(GenerateNewChunk(c, size, noiseLists));
+                index = 0;
+                foreach(var nList in tileNoiseLists)
+                {
+                    jobHandleList.Add(GenerateNewChunk(c, size, nList,noiseParameterLists[index++]));
+                }
+                
+            }
+            else
+            {
+                LoadFromFile(c);
             }
             
         }
 
         JobHandle.CompleteAll(jobHandleList);
-        StartCoroutine(SetMapTiles(noiseLists, cCenters, size));
+        StartCoroutine(SetMapTiles(tileNoiseLists, cCenters, size));
     } 
-    private IEnumerator SetMapTiles(List<NativeArray<float>> noiseLists, List<chunkCenter> cCenters, int size)
+    private void LoadFromFile(chunkCenter cCenter)
+    {
+
+    }
+    private Biome getBiomeForLocation(float moistureNoise)
+    {
+        foreach(var biome in biomes)
+        {
+            if(moistureNoise > biome.minMoisture && moistureNoise <= biome.maxMoisture)
+            {
+                return biome;
+            }
+        }
+        return biomes[0];
+    }
+    private IEnumerator SetMapTiles(List<List<NativeArray<float>>> tileNoiseLists, List<chunkCenter> cCenters, int size)
     {
         yield return null;
+        /*
         Vector3Int[] groundPositionArray = new Vector3Int[size * size];
         TileBase[] groundTileArray = new TileBase[size * size];
         Vector3Int[] waterPositionArray = new Vector3Int[size * size];
-        TileBase[] waterTileArray = new TileBase[size * size];
+        TileBase[] waterTileArray = new TileBase[size * size];*/
+        List<Vector3Int[]> positionArrays = new List<Vector3Int[]>(tilemaps.Count);
+        for(int i = 0; i < tilemaps.Count; i++)
+        {
+            positionArrays.Add(new Vector3Int[size * size]);
+        }
+        List<TileBase[]> tileArrays = new List<TileBase[]>(tilemaps.Count);
+        for(int i = 0; i < tilemaps.Count; i++)
+        {
+            tileArrays.Add(new TileBase[size * size]);
+        }
         int index, noiseListNum = 0;
         int boundsCenterX, boundsCenterY;
-        foreach (var NoiseValues in noiseLists)
+        Biome curBiome;
+        tilemapData curTileData;
+        HashSet<int> modifiedTilemaps;
+        int randIndex;
+        foreach (var NoiseValues in tileNoiseLists[heightNoiseIndex])
         {
-            GenerateStructures(cCenters[noiseListNum],NoiseValues.ToList());
-            boundsCenterY = cCenters[noiseListNum].boundsCenterY;
-            boundsCenterX = cCenters[noiseListNum++].boundsCenterX;
-            index = 0;
-            for (int x = boundsCenterX - size / 2; x < boundsCenterX + size / 2; x++)
+            randIndex = random.Next(tileNoiseLists[moistureNoiseIndex][noiseListNum].Count());
+            modifiedTilemaps = new HashSet<int>();
+            if (chunkExistsOnFile(cCenters[noiseListNum]))
             {
-                for (int y = boundsCenterY - size / 2; y < boundsCenterY + size / 2; y++)
+                NoiseValues.Dispose();
+                noiseListNum++;
+                continue;
+            }
+            //GenerateStructures(cCenters[noiseListNum],NoiseValues.ToList());
+            boundsCenterY = cCenters[noiseListNum].boundsCenterY;
+            boundsCenterX = cCenters[noiseListNum].boundsCenterX;
+            index = 0;
+            curBiome = getBiomeForLocation(tileNoiseLists[moistureNoiseIndex][noiseListNum][randIndex]);
+            foreach (var curMapData in curBiome.tilemaps)
+            {
+                if (!modifiedTilemaps.Contains(curMapData.tilemapIndex))
                 {
-                    if (NoiseValues[index] < 0.5f)
+                    modifiedTilemaps.Add(curMapData.tilemapIndex);
+                }
+                for (int x = boundsCenterX - size / 2; x < boundsCenterX + size / 2; x++)
+                {
+                    for (int y = boundsCenterY - size / 2; y < boundsCenterY + size / 2; y++)
                     {
-                        groundTileArray[index] = tiles[(int)tileNames.grass];
-                        groundPositionArray[index] = new Vector3Int(x, y, 0);
+                        if(x == 0 && y == 0)
+                        {
+                            Debug.Log("hi");
+                        }
+                        positionArrays[curMapData.tilemapIndex][index] = new Vector3Int(x, y, 0);
+                        tileArrays[curMapData.tilemapIndex][index] = curMapData.getTileForHeight(NoiseValues[index]);
+                        index++;
                     }
-                    else
-                    {
-                        waterTileArray[index] = tiles[(int)tileNames.shallow_water];
-                        waterPositionArray[index] = new Vector3Int(x, y, 0);
-                    }
-                    index += 1;
-
                 }
             }
-            groundTilemap.SetTiles(groundPositionArray, groundTileArray);
-            waterTilemap.SetTiles(waterPositionArray, waterTileArray);
-            NoiseValues.Dispose();
+            foreach(var ind2 in modifiedTilemaps)
+            {
+                tilemaps[ind2].SetTiles(positionArrays[ind2], tileArrays[ind2]);
+            }
 
+            NoiseValues.Dispose();
+            tileNoiseLists[moistureNoiseIndex][noiseListNum++].Dispose();
         }
-        groundTilemap.SetTile(new Vector3Int(0, 0, 0), tiles[(int)tileNames.grass]);
+        //groundTilemap.SetTile(new Vector3Int(0, 0, 0), tiles[(int)tileNames.grass]);
+        SaveChunks(cCenters);
         /*waterTilemap.gameObject.SetActive(false);
         waterTilemap.gameObject.SetActive(true);*/
     }
+
+    private void SaveChunks(List<chunkCenter> cCenters)
+    {
+        /*
+        foreach(var chunkCenter in cCenters)
+        {
+            //AssetDatabase.;
+            Structure chunk = new Structure();
+            saver.destStructure = chunk;
+            saver.InitStructure();
+            saver.Save(new int2(chunkCenter.boundsCenterX, chunkCenter.boundsCenterY));
+        }*/
+    }
+
     private void GenerateStructures(chunkCenter cCenter, List<float> noiseValues)
     {
+        /*
         int randDex = random.Next(noiseValues.Count);
         if(noiseValues[randDex] > structuresOdds)
         {
             int index = random.Next(structures.Count);
             //structures[index]
             int ind = 0;
-            List<Vector3List> positionLists = new List<Vector3List>();
+            List<List<Vector3Int>> positionLists = new List<List<Vector3Int>>();
             foreach(var positionList in structures[index].positionLists)
             {
-                positionLists.Add(new Vector3List(new List<Vector3Int>()));
-                foreach(var vector in positionList.list)
+                positionLists.Add(new List<Vector3Int>());
+                foreach(Vector3Int vector in positionList.list)
                 {
-                    positionLists[ind].list.Add(vector + new Vector3Int(cCenter.boundsCenterX, cCenter.boundsCenterY, 0));
+                    positionLists[ind].Add(vector + new Vector3Int(cCenter.boundsCenterX, cCenter.boundsCenterY,0));
                 }
                 ind++;
             }
             int ind2 = 0;
             foreach (var tilemap in structureTilemaps)
             {
-                //structures[index].tileLists
-                tilemap.SetTiles(positionLists[ind2].list.ToArray(),structures[index].tileLists[ind2].list.ToArray());
+                tilemap.SetTiles(positionLists[ind2].ToArray(),structures[index].tileLists[ind2].list.ToArray());
                 ind2++;
             }
-        }
+        }*/
     }
     private void checkForChunks(List<chunkCenter> chunksToGenerate, Vector3 playerPos,chunkCenter qNE, chunkCenter qE, chunkCenter qW, chunkCenter qSE, chunkCenter qS, chunkCenter qN, chunkCenter qNW, chunkCenter qSW)
     {
@@ -348,13 +435,21 @@ public class WorldGenerator : MonoBehaviour
         int boundsCenterX = cCenter.boundsCenterX;
         int boundsCenterY = cCenter.boundsCenterY;
         int size = defaultChunkSize;
+        List<Vector3Int> positionList = new List<Vector3Int>();
+        List<TileBase> nullList = new List<TileBase>();
         for (int x = boundsCenterX - size / 2; x < boundsCenterX + size / 2; x++)
         {
             for (int y = boundsCenterY - size / 2; y < boundsCenterY + size / 2; y++)
             {
-                groundTilemap.SetTile(new Vector3Int(x, y, 0), null);
+                positionList.Add(new Vector3Int(x, y, 0));
+                nullList.Add(null);
             }
         }
+        foreach(var tilemap in tilemaps)
+        {
+            tilemap.SetTiles(positionList.ToArray(), nullList.ToArray());
+        }
+
 
     }
     private void chunkManagerHelper(Vector2Int lastGenerationPosition,chunkCenter qNE, chunkCenter qE, chunkCenter qW, chunkCenter qSE, chunkCenter qS, chunkCenter qN, chunkCenter qNW, chunkCenter qSW)
@@ -409,29 +504,48 @@ public struct GenerateMapJob : IJob
     private int bX;
     private int bY;
     private int sz;
+    /*
+
     private int sd;
     private float amp;
     private float freq;
     private float pers;
     private float lac;
-    private int oct;
-    public NativeArray<float> noiseValues;
-    public GenerateMapJob(int boundsCenterX, int boundsCenterY, int size, NoiseParameters nos, NativeArray<float> nosValues)
+    private int oct;*/
+    public NoiseParameters noise;
+    public NativeArray<float> noiseValueList;
+    /*
+    public NoiseParameters moistureNoise;
+    public NativeArray<float> moistureNoiseValues;*/
+    public GenerateMapJob(int boundsCenterX, int boundsCenterY, int size, NoiseParameters nos, NativeArray<float> nvLists)
     {
+
         bX = boundsCenterX;
         bY = boundsCenterY;
         sz = size;
-        sd = nos.sd;
-        amp = nos.amp;
-        freq = nos.freq;
-        pers = nos.pers;
-        lac = nos.lac;
-        oct = nos.oct;
-        noiseValues = nosValues;
+        /*
+        sd = nos.seed;
+        amp = nos.amplitude;
+        freq = nos.frequency;
+        pers = nos.persistence;
+        lac = nos.lacunarity;
+        oct = nos.octaves;*/
+        noise = nos;
+        noiseValueList = nvLists;
     }
     public void Execute()
     {
-        //noiseValues = new float[sz * sz];
+        int index = 0;
+        GenerateNoise(noise, noiseValueList);
+    }
+    public void GenerateNoise(NoiseParameters p, NativeArray<float> nosValues)
+    {
+        float amp = p.amplitude;
+        float freq = p.frequency;
+        int oct = p.octaves;
+        float lac = p.lacunarity;
+        float pers = p.persistence;
+        int sd = p.seed;
         float max = 0f;
         float min = float.MaxValue;
         int index = 0;
@@ -441,17 +555,17 @@ public struct GenerateMapJob : IJob
             {
                 float tempA = amp;
                 float tempF = freq;
-                noiseValues[index] = 0f;
+                nosValues[index] = 0f;
                 for (int k = 0; k < oct; k++)
                 {
-                    noiseValues[index] += Mathf.PerlinNoise(((i + sd) / (float)sz * freq), (j + sd) / (float)sz * freq) * amp;
+                    nosValues[index] += Mathf.PerlinNoise(((i + sd) / ((float)sz * freq)), (j + sd) / ((float)sz * freq)) * amp;
                     freq *= lac;
                     amp *= pers;
                 }
                 amp = tempA;
                 freq = tempF;
-                if (noiseValues[index] > max) max = noiseValues[index];
-                if (noiseValues[index] < min) min = noiseValues[index];
+                if (nosValues[index] > max) max = nosValues[index];
+                if (nosValues[index] < min) min = nosValues[index];
                 index++;
             }
         }
@@ -460,9 +574,8 @@ public struct GenerateMapJob : IJob
         {
             for (int j = 0; j < sz; j++)
             {
-                noiseValues[index] = Mathf.InverseLerp(max, min, noiseValues[index]);
+                nosValues[index] = Mathf.InverseLerp(max, min, nosValues[index]);
             }
         }
-        
     }
 }

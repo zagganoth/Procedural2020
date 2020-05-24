@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4fbc15cc70a276429bb54fa15219b81, type: 3}
+  m_Name: Plains
+  m_EditorClassIdentifier: 
+  tilemaps:
+  - tilemapIndex: 1
+    tiles:
+    - minTileHeight: 0
+      maxTileHeight: 0.5
+      tileProbability: 1
+      tile: {fileID: 11400000, guid: 3bde3bab839ef46409c57c8fef31250a, type: 2}
+    - minTileHeight: 0.5
+      maxTileHeight: 1
+      tileProbability: 1
+      tile: {fileID: 11400000, guid: 60cc00b3cc3e4ae4f98bbbbf6ddcf9d0, type: 2}
+  possibleStructures:
+  - {fileID: 11400000, guid: 249d8aaef1cf21b479ed29fb7dc6bf5c, type: 2}
+  - {fileID: 11400000, guid: 7853361caf4e3534d9d82e36f795635f, type: 2}
+  minMoisture: 0.5
+  maxMoisture: 1
+  spawnOdds: 1

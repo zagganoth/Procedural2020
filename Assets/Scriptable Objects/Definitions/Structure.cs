@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-[CreateAssetMenu(fileName = "New Structure", menuName = "Custom/Structures/Structure")]
+[CreateAssetMenu(fileName = "New Structure", menuName = "Custom/Worldgen/Structure")]
 public class Structure : ScriptableObject
 {
     [SerializeField]
@@ -25,8 +25,8 @@ public class TileList
 [System.Serializable]
 public class Vector3List
 {
-    public List<Vector3Int> list;
-    public Vector3List(List<Vector3Int> initList)
+    public List<Vector2Int> list;
+    public Vector3List(List<Vector2Int> initList)
     {
         list = initList;
     }
