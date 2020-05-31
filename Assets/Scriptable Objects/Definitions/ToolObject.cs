@@ -9,8 +9,5 @@ public abstract class ToolObject : ItemObject
     public int range;
     [SerializeField]
     public AnimatorController animator;
-    public override bool canSwing()
-    {
-        return true;
-    }
+
 }

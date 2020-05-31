@@ -22,7 +22,7 @@ MonoBehaviour:
     - minTileHeight: 0.5
       maxTileHeight: 1
       tileProbability: 1
-      tile: {fileID: 11400000, guid: 60cc00b3cc3e4ae4f98bbbbf6ddcf9d0, type: 2}
+      tile: {fileID: 11400000, guid: 93208bd3df5ba094a95ebc2132f7300f, type: 2}
   possibleStructures:
   - {fileID: 11400000, guid: 249d8aaef1cf21b479ed29fb7dc6bf5c, type: 2}
   - {fileID: 11400000, guid: 7853361caf4e3534d9d82e36f795635f, type: 2}

@@ -271,8 +271,26 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.Advertisements">
-      <HintPath>D:/Projects/Unity/Procedural/Library/PackageCache/com.unity.ads@3.4.4/Editor/UnityEditor.Advertisements.dll</HintPath>
+    <Reference Include="DotNetZip">
+      <HintPath>D:/Projects/Unity/Procedural/Assets/NuGet/Editor/DotNetZip.dll</HintPath>
+    </Reference>
+    <Reference Include="NugetForUnity">
+      <HintPath>D:/Projects/Unity/Procedural/Assets/NuGet/Editor/NugetForUnity.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf">
+      <HintPath>D:/Projects/Unity/Procedural/Assets/Packages/Google.Protobuf.3.12.1/lib/net45/Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>D:/Projects/Unity/Procedural/Assets/Packages/protobuf-net.2.4.6/lib/net40/protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers">
+      <HintPath>D:/Projects/Unity/Procedural/Assets/Packages/System.Buffers.4.4.0/lib/netstandard2.0/System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>D:/Projects/Unity/Procedural/Assets/Packages/System.Memory.4.5.2/lib/netstandard2.0/System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics.Vectors">
+      <HintPath>D:/Projects/Unity/Procedural/Assets/Packages/System.Numerics.Vectors.4.4.0/lib/net46/System.Numerics.Vectors.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Editor">
       <HintPath>D:/Projects/Unity/Procedural/Library/PackageCache/com.unity.analytics@3.3.5/Unity.Analytics.Editor.dll</HintPath>

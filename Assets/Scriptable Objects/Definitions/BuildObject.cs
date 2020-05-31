@@ -24,8 +24,4 @@ public class BuildObject : ItemObject
     {
         //playerRef = e.playerRef;
     }*/
-    public override bool canBePlaced()
-    {
-        return true;
-    }
 }

@@ -63,13 +63,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Classes\Chunk.cs" />
+    <Compile Include="Assets\Classes\ItemComponent.cs" />
     <Compile Include="Assets\Classes\Noise.cs" />
-    <Compile Include="Assets\Classes\WorldData.cs" />
-    <Compile Include="Assets\CleanupTiles.cs" />
-    <Compile Include="Assets\Components\InventoryComponent.cs" />
     <Compile Include="Assets\Components\MovementComponent.cs" />
     <Compile Include="Assets\Components\PlayerMovementInputComponent.cs" />
-    <Compile Include="Assets\EnemyCollisionHandler.cs" />
+    <Compile Include="Assets\EditorButNot\EditorWithSubEditors.cs" />
     <Compile Include="Assets\External\CielaSpike\Thread Ninja\Example\ExampleScript.cs" />
     <Compile Include="Assets\External\CielaSpike\Thread Ninja\Ninja.cs" />
     <Compile Include="Assets\External\CielaSpike\Thread Ninja\Task.cs" />
@@ -109,26 +108,33 @@
     <Compile Include="Assets\External\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
     <Compile Include="Assets\External\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
     <Compile Include="Assets\Input\InputMaster.cs" />
-    <Compile Include="Assets\LayerSort.cs" />
     <Compile Include="Assets\RockAngerBehavior.cs" />
-    <Compile Include="Assets\RockData.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\Biome.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\BuildObject.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\Inventory.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\ItemObject.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\LootPool.cs" />
+    <Compile Include="Assets\Scriptable Objects\Definitions\PlaceableComponent.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\Structure.cs" />
+    <Compile Include="Assets\Scriptable Objects\Definitions\TileDataStore.cs" />
+    <Compile Include="Assets\Scriptable Objects\Definitions\ToolComponent.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\ToolObject.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\WeaponObject.cs" />
     <Compile Include="Assets\Scripts\CameraFollow.cs" />
     <Compile Include="Assets\Scripts\ChestManager.cs" />
+    <Compile Include="Assets\Scripts\ChunkPersistenceHandler.cs" />
+    <Compile Include="Assets\Scripts\CleanupTiles.cs" />
     <Compile Include="Assets\Scripts\EnemyAI.cs" />
+    <Compile Include="Assets\Scripts\EnemyCollisionHandler.cs" />
     <Compile Include="Assets\Scripts\EnemySpawner.cs" />
     <Compile Include="Assets\Scripts\EventManager.cs" />
     <Compile Include="Assets\Scripts\Items\EquippedTool.cs" />
     <Compile Include="Assets\Scripts\Items\Item.cs" />
+    <Compile Include="Assets\Scripts\LayerSort.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\RockData.cs" />
     <Compile Include="Assets\Scripts\StructureSaver.cs" />
+    <Compile Include="Assets\Scripts\TrinketPouchUIComponents.cs" />
     <Compile Include="Assets\Scripts\UI\BaseInventoryUIComponents.cs" />
     <Compile Include="Assets\Scripts\UI\ChestInventoryUIComponents.cs" />
     <Compile Include="Assets\Scripts\UI\DragButton.cs" />
@@ -142,28 +148,38 @@
     <Compile Include="Assets\Systems\AttackSystem.cs" />
     <Compile Include="Assets\Systems\CharacterMovementSystem.cs" />
     <Compile Include="Assets\Systems\InputManagingSystem.cs" />
-    <Compile Include="Assets\TrinketPouchUIComponents.cs" />
     <Compile Include="Assets\UIParent.cs" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
+    <None Include="Assets\Packages\protobuf-net.2.4.6\lib\net40\protobuf-net.xml" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
+    <None Include="Assets\Packages\System.Numerics.Vectors.4.4.0\version.txt" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\External\TextMesh Pro\Examples &amp; Extras\Fonts\Oswald-Bold - OFL.txt" />
     <None Include="Assets\External\TextMesh Pro\Examples &amp; Extras\Fonts\Anton OFL.txt" />
     <None Include="Assets\External\SzadiArt\public-license.txt" />
+    <None Include="Assets\Packages\System.Memory.4.5.2\useSharedDesignerContext.txt" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\Packages\System.Buffers.4.4.0\useSharedDesignerContext.txt" />
+    <None Include="Assets\Packages\System.Numerics.Vectors.4.4.0\lib\net46\System.Numerics.Vectors.xml" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\External\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMP_SDF.shader" />
     <None Include="Assets\External\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
+    <None Include="Assets\Packages\System.Buffers.4.4.0\version.txt" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\External\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+    <None Include="Assets\Packages\Google.Protobuf.3.12.1\lib\net45\Google.Protobuf.xml" />
+    <None Include="Assets\Packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.xml" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Masking.shader" />
+    <None Include="Assets\Packages\System.Memory.4.5.2\lib\netstandard2.0\System.Memory.xml" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Mobile.shader" />
+    <None Include="Assets\Packages\System.Memory.4.5.2\version.txt" />
     <None Include="Assets\External\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile.shader" />
+    <None Include="Assets\Packages\System.Numerics.Vectors.4.4.0\useSharedDesignerContext.txt" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
     <None Include="Assets\External\TextMesh Pro\Examples &amp; Extras\Fonts\Bangers - OFL.txt" />
     <Reference Include="UnityEngine">
@@ -348,6 +364,21 @@
     </Reference>
     <Reference Include="UnityEditor">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.12f1/Editor/Data/Managed/UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf">
+      <HintPath>D:/Projects/Unity/Procedural/Assets/Packages/Google.Protobuf.3.12.1/lib/net45/Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>D:/Projects/Unity/Procedural/Assets/Packages/protobuf-net.2.4.6/lib/net40/protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers">
+      <HintPath>D:/Projects/Unity/Procedural/Assets/Packages/System.Buffers.4.4.0/lib/netstandard2.0/System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>D:/Projects/Unity/Procedural/Assets/Packages/System.Memory.4.5.2/lib/netstandard2.0/System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics.Vectors">
+      <HintPath>D:/Projects/Unity/Procedural/Assets/Packages/System.Numerics.Vectors.4.4.0/lib/net46/System.Numerics.Vectors.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Editor">
       <HintPath>D:/Projects/Unity/Procedural/Library/PackageCache/com.unity.analytics@3.3.5/Unity.Analytics.Editor.dll</HintPath>
@@ -730,9 +761,6 @@
     <Reference Include="UnityEditor.CacheServer">
       <HintPath>D:/Projects/Unity/Procedural/Library/ScriptAssemblies/UnityEditor.CacheServer.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Monetization">
-      <HintPath>D:/Projects/Unity/Procedural/Library/ScriptAssemblies/UnityEngine.Monetization.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.2D.Animation.Runtime">
       <HintPath>D:/Projects/Unity/Procedural/Library/ScriptAssemblies/Unity.2D.Animation.Runtime.dll</HintPath>
     </Reference>
@@ -762,9 +790,6 @@
     </Reference>
     <Reference Include="Unity.Burst.Editor">
       <HintPath>D:/Projects/Unity/Procedural/Library/ScriptAssemblies/Unity.Burst.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Advertisements">
-      <HintPath>D:/Projects/Unity/Procedural/Library/ScriptAssemblies/UnityEngine.Advertisements.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Editor">
       <HintPath>D:/Projects/Unity/Procedural/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.dll</HintPath>

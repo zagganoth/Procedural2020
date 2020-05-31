@@ -81,6 +81,8 @@ public class WorldGenerator : MonoBehaviour
     List<Structure> structures;*/
     [SerializeField]
     List<chunkCenter> chunksToGenerate;
+    [SerializeField]
+    ChunkPersistenceHandler cpHandler;
     System.Random random;
     private StructureSaver saver;
 
@@ -98,6 +100,7 @@ public class WorldGenerator : MonoBehaviour
     private void Awake()
     {
         saver = GetComponent<StructureSaver>();
+        cpHandler = GetComponent<ChunkPersistenceHandler>();
     }
     // Start is called before the first frame update
     void Start()
@@ -151,7 +154,11 @@ public class WorldGenerator : MonoBehaviour
     }
     private bool chunkExistsOnFile(chunkCenter c)
     {
-        return false;
+        DecompressedChunk chunkParams = cpHandler.LoadChunkFromDisk(c.boundsCenterX / defaultChunkSize, c.boundsCenterY / defaultChunkSize, defaultChunkSize);
+        if (chunkParams == null) return false;
+        SetTilesForChunk(chunkParams.tilemapIndices, chunkParams.tileLists, chunkParams.positionLists);
+        return true;
+        //Chunk.ChunkExists(c.boundsCenterX/defaultChunkSize, c.boundsCenterY/defaultChunkSize);
     }
     private JobHandle GenerateNewChunk(chunkCenter c, int size, List<NativeArray<float>> noiseLists,NoiseParameters nosP)
     {
@@ -170,10 +177,12 @@ public class WorldGenerator : MonoBehaviour
     //Pass in a list of chunks to be generated, and it will call jobs to get noise values for 
     private void GenerateMap(List<chunkCenter> cCenters,int size)
     {
+
         if (cCenters.Count <= 0) return;
         NativeList<JobHandle> jobHandleList = new NativeList<JobHandle>(Allocator.Temp);
         List<List<NativeArray<float>>> tileNoiseLists = new List<List<NativeArray<float>>>();
         int index = 0;
+        bool newTilesGenerated = false;
         foreach(var noise in noiseParameterLists)
         {
             tileNoiseLists.Add(new List<NativeArray<float>>());
@@ -187,22 +196,17 @@ public class WorldGenerator : MonoBehaviour
                 {
                     jobHandleList.Add(GenerateNewChunk(c, size, nList,noiseParameterLists[index++]));
                 }
-                
-            }
-            else
-            {
-                LoadFromFile(c);
+                newTilesGenerated = true;
             }
             
         }
 
         JobHandle.CompleteAll(jobHandleList);
-        StartCoroutine(SetMapTiles(tileNoiseLists, cCenters, size));
+        if (newTilesGenerated)
+        {
+            StartCoroutine(SetMapTiles(tileNoiseLists, cCenters, size));
+        }
     } 
-    private void LoadFromFile(chunkCenter cCenter)
-    {
-
-    }
     private Biome getBiomeForLocation(float moistureNoise)
     {
         foreach(var biome in biomes)
@@ -217,11 +221,7 @@ public class WorldGenerator : MonoBehaviour
     private IEnumerator SetMapTiles(List<List<NativeArray<float>>> tileNoiseLists, List<chunkCenter> cCenters, int size)
     {
         yield return null;
-        /*
-        Vector3Int[] groundPositionArray = new Vector3Int[size * size];
-        TileBase[] groundTileArray = new TileBase[size * size];
-        Vector3Int[] waterPositionArray = new Vector3Int[size * size];
-        TileBase[] waterTileArray = new TileBase[size * size];*/
+
         List<Vector3Int[]> positionArrays = new List<Vector3Int[]>(tilemaps.Count);
         for(int i = 0; i < tilemaps.Count; i++)
         {
@@ -242,12 +242,6 @@ public class WorldGenerator : MonoBehaviour
         {
             randIndex = random.Next(tileNoiseLists[moistureNoiseIndex][noiseListNum].Count());
             modifiedTilemaps = new HashSet<int>();
-            if (chunkExistsOnFile(cCenters[noiseListNum]))
-            {
-                NoiseValues.Dispose();
-                noiseListNum++;
-                continue;
-            }
             //GenerateStructures(cCenters[noiseListNum],NoiseValues.ToList());
             boundsCenterY = cCenters[noiseListNum].boundsCenterY;
             boundsCenterX = cCenters[noiseListNum].boundsCenterX;
@@ -263,43 +257,32 @@ public class WorldGenerator : MonoBehaviour
                 {
                     for (int y = boundsCenterY - size / 2; y < boundsCenterY + size / 2; y++)
                     {
-                        if(x == 0 && y == 0)
-                        {
-                            Debug.Log("hi");
-                        }
                         positionArrays[curMapData.tilemapIndex][index] = new Vector3Int(x, y, 0);
                         tileArrays[curMapData.tilemapIndex][index] = curMapData.getTileForHeight(NoiseValues[index]);
                         index++;
                     }
                 }
             }
-            foreach(var ind2 in modifiedTilemaps)
-            {
-                tilemaps[ind2].SetTiles(positionArrays[ind2], tileArrays[ind2]);
-            }
-
+            SetTilesForChunk(modifiedTilemaps, tileArrays, positionArrays);
+            cpHandler.CreateAndSaveChunk(boundsCenterX/defaultChunkSize, boundsCenterY/defaultChunkSize, tileArrays,modifiedTilemaps);
+            //Debug.Log(positionArrays);
+            /*Chunk c = new Chunk(boundsCenterX/defaultChunkSize, boundsCenterY/defaultChunkSize, tileArrays,positionArrays);
+            c.SaveToFile();*/
             NoiseValues.Dispose();
             tileNoiseLists[moistureNoiseIndex][noiseListNum++].Dispose();
         }
         //groundTilemap.SetTile(new Vector3Int(0, 0, 0), tiles[(int)tileNames.grass]);
-        SaveChunks(cCenters);
+        //SaveChunks(cCenters);
         /*waterTilemap.gameObject.SetActive(false);
         waterTilemap.gameObject.SetActive(true);*/
     }
-
-    private void SaveChunks(List<chunkCenter> cCenters)
+    private void SetTilesForChunk(HashSet<int> modifiedTilemaps,List<TileBase[]> tileArrays,List<Vector3Int[]> positionArrays)
     {
-        /*
-        foreach(var chunkCenter in cCenters)
+        foreach (var ind2 in modifiedTilemaps)
         {
-            //AssetDatabase.;
-            Structure chunk = new Structure();
-            saver.destStructure = chunk;
-            saver.InitStructure();
-            saver.Save(new int2(chunkCenter.boundsCenterX, chunkCenter.boundsCenterY));
-        }*/
+            tilemaps[ind2].SetTiles(positionArrays[ind2], tileArrays[ind2]);
+        }
     }
-
     private void GenerateStructures(chunkCenter cCenter, List<float> noiseValues)
     {
         /*
@@ -331,49 +314,49 @@ public class WorldGenerator : MonoBehaviour
     {
 
         //top right corner
-        if (!loadedChunks.Contains(qNE))// && playerPos.x > qInit.x + defaultChunkSize / 4 && playerPos.y > qInit.y + defaultChunkSize / 4)
+        if (!loadedChunks.Contains(qNE))
         {
             //qNE
             chunksToGenerate.Add(qNE);
             loadedChunks.Add(qNE);
         }
-        if (!loadedChunks.Contains(qE))// && playerPos.x > qInit.x + defaultChunkSize / 4)
+        if (!loadedChunks.Contains(qE))
         {
             //qE
             chunksToGenerate.Add(qE);
             loadedChunks.Add(qE);
         }
-        if (!loadedChunks.Contains(qW))// && playerPos.x < qInit.x - defaultChunkSize / 4)
+        if (!loadedChunks.Contains(qW))
         {
             //qW
             chunksToGenerate.Add(qW);
             loadedChunks.Add(qW);
         }
-        if (!loadedChunks.Contains(qSE))// && playerPos.x > qInit.x + defaultChunkSize / 4 && playerPos.y < qInit.y - defaultChunkSize / 4)
+        if (!loadedChunks.Contains(qSE))
         {
             //qSE
             chunksToGenerate.Add(qSE);
             loadedChunks.Add(qSE);
         }
-        if (!loadedChunks.Contains(qN))// && playerPos.y > qInit.y + defaultChunkSize / 4)
+        if (!loadedChunks.Contains(qN))
         {
             //qN
             chunksToGenerate.Add(qN);
             loadedChunks.Add(qN);
         }
-        if (!loadedChunks.Contains(qNW))// && playerPos.y > qInit.y + defaultChunkSize / 4 && playerPos.x < qInit.x - defaultChunkSize / 4)
+        if (!loadedChunks.Contains(qNW))
         {
             //qNW
             chunksToGenerate.Add(qNW);
             loadedChunks.Add(qNW);
         }
-        if (!loadedChunks.Contains(qS))// && playerPos.y < qInit.y - defaultChunkSize / 4)
+        if (!loadedChunks.Contains(qS))
         {
             //qS
             chunksToGenerate.Add(qS);
             loadedChunks.Add(qS);
         }
-        if (!loadedChunks.Contains(qSW))// && playerPos.x < qInit.x - defaultChunkSize / 4 && playerPos.y < qInit.y - defaultChunkSize / 4)
+        if (!loadedChunks.Contains(qSW))
         {
             //qSW
             chunksToGenerate.Add(qSW);
@@ -485,7 +468,6 @@ public class WorldGenerator : MonoBehaviour
             qNW = new chunkCenter(qInit.x - defaultChunkSize, qInit.y + defaultChunkSize);
             qSW = new chunkCenter(qInit.x - defaultChunkSize, qInit.y - defaultChunkSize);
 
-
             if (Vector2Int.Distance(qInit,new Vector2Int((int)playerPos.x,(int)playerPos.y)) > defaultChunkSize/2)
             {
                 changeCenterChunk(playerPos,qNE, qE, qW, qSE, qS, qN, qNW, qSW);
@@ -535,7 +517,6 @@ public struct GenerateMapJob : IJob
     }
     public void Execute()
     {
-        int index = 0;
         GenerateNoise(noise, noiseValueList);
     }
     public void GenerateNoise(NoiseParameters p, NativeArray<float> nosValues)
