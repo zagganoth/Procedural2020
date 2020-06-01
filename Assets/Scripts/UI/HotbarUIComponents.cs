@@ -32,10 +32,11 @@ public class HotbarUIComponents : BaseInventoryUIComponents
     }
     public void placeBlock(object sender, EventManager.OnRightClickArgs e)
     {
-        PlaceableComponent pc = activeInventory.items[activeSlotIndex].getComponent("placeable") as PlaceableComponent;
+        PlaceableComponent pc = activeInventory.items[activeSlotIndex].getComponent("PlaceableComponent") as PlaceableComponent;
         if (pc != null)//.canBePlaced())
         {
             wallTilemap.SetTile(Vector3Int.FloorToInt(e.clickPosition), pc.GetRelevantTile());
+            wallTilemap.RefreshAllTiles();
         }
     }
     public override Inventory GetRelevantInventory()

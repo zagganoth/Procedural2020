@@ -9,6 +9,6 @@ public class PlaceableComponent : ItemComponent
     public TileBase tile;
     public TileBase GetRelevantTile()
     {
-        return null;
+        return tile;
     }
 }

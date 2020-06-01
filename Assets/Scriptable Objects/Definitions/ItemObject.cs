@@ -109,12 +109,18 @@ public class ItemObject : ScriptableObject
                 AddNewComponent();
                 if (GUILayout.Button("Clear"))
                 {
+
+                    for(int i = 0; i < targetObject.components.Count;i++)
+                    {
+                        AssetDatabase.RemoveObjectFromAsset(targetObject.components[i]);
+                    }
                     targetObject.components.Clear();
                     subEditors.Clear();
+
                 }
                 EditorGUI.indentLevel--;
             }
-
+            DrawDictionary();
             serializedObject.ApplyModifiedProperties();
         }
         public void DrawDictionary()
@@ -138,13 +144,9 @@ public class ItemObject : ScriptableObject
                 }
             }
         }
+        //Several of the below functions are more-or-less straight from https://learn.unity.com/tutorial/adventure-game-phase-4-reactions?projectId=5c514af7edbc2a001fd5c012#5c7f8528edbc2a002053b390
         public void AddNewComponent()
         {
-            /*if (GUILayout.Button(text))
-            {
-                targetObject.components.Add(new ItemComponent());
-                subEditors.Add(CreateEditor(targetObject.components[targetObject.components.Count-1]) as ItemComponent.ItemComponentEditor);
-            }*/
             // Create a GUI style of a box but with middle aligned text and button text color.
             Rect fullWidthRect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, GUILayout.Height(50 + EditorGUIUtility.standardVerticalSpacing));
             GUIStyle centredStyle = GUI.skin.box;
@@ -171,26 +173,15 @@ public class ItemObject : ScriptableObject
             {
                 // If the mouse is dragging something...
                 case EventType.DragUpdated:
-                    // ... change whether or not the drag *can* be performed by changing the visual mode of the cursor based on the IsDragValid function.
                     DragAndDrop.visualMode = IsDragValid() ? DragAndDropVisualMode.Link : DragAndDropVisualMode.Rejected;
-
-                    // Make sure the event isn't used by anything else.
                     currentEvent.Use();
-
                     break;
-
                 // If the mouse was dragging something and has released...
                 case EventType.DragPerform:
-                    // ... accept the drag event.
                     DragAndDrop.AcceptDrag();
-
-                    // Go through all the objects that were being dragged...
                     for (int i = 0; i < DragAndDrop.objectReferences.Length; i++)
                     {
-                        // ... and find the script asset that was being dragged...
                         MonoScript script = DragAndDrop.objectReferences[i] as MonoScript;
-                        
-                        // ... then find the type of that Reaction...
                         Type componentType = script.GetClass();
                         ItemComponent inst = (ItemComponent)CreateInstance(componentType);
                         targetObject.components.Add(inst);
@@ -202,10 +193,6 @@ public class ItemObject : ScriptableObject
                         AssetDatabase.AddObjectToAsset(targetObject.components[targetObject.components.Count-1], _path);
                         AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
-                        /*
-                        // ... and create a Reaction of that type and add it to the array.
-                        ItemComponent newComponent = editor.CreateReaction(reactionType);
-                        editor.reactionsProperty.AddToObjectArray(newReaction);*/
 
                     }
 
