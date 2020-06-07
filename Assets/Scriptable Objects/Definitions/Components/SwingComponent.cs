@@ -7,7 +7,6 @@ public class SwingComponent : ItemComponent
 {
     [SerializeField]
     public float swingTime;
-    public int range;
     [SerializeField]
     public AnimatorController animator;
 }

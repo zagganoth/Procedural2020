@@ -25,11 +25,20 @@ public class ItemObject : ScriptableObject
     }
     private void OnEnable()
     {
+        if (components == null) components = new List<ItemComponent>();
         componentsDict = new Dictionary<string, ItemComponent>();
-        foreach (var comp in components)
+        for(int i = 0; i < components.Count;i++)
         {
-            componentsDict.Add(comp.tag, comp);
+            if (components[i] == null || components[i].tag == null)
+            {
+                components.RemoveAt(i);
+            }
+            else
+            {
+                componentsDict.Add(components[i].tag, components[i]);
+            }
         }
+
     }
     private void Awake()
     {
@@ -150,6 +159,20 @@ public class ItemObject : ScriptableObject
                     EditorGUILayout.EndHorizontal();
                 }
             }
+        }
+        public override Texture2D RenderStaticPreview(string assetPath, UnityEngine.Object[] subAssets, int width, int height)
+        {
+            if (targetObject.image == null) return base.RenderStaticPreview(assetPath, subAssets, width, height);
+            Sprite sprite = targetObject.image;
+            var croppedTexture = new Texture2D((int)sprite.rect.width, (int)sprite.rect.height);
+            var pixels = sprite.texture.GetPixels((int)sprite.textureRect.x,
+                                                    (int)sprite.textureRect.y,
+                                                    (int)sprite.textureRect.width,
+                                                    (int)sprite.textureRect.height);
+            croppedTexture.SetPixels(pixels);
+            croppedTexture.Apply();
+            return croppedTexture;
+
         }
         //Several of the below functions are more-or-less straight from https://learn.unity.com/tutorial/adventure-game-phase-4-reactions?projectId=5c514af7edbc2a001fd5c012#5c7f8528edbc2a002053b390
         public void AddNewComponent()

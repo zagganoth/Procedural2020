@@ -113,11 +113,12 @@
     <Compile Include="Assets\RockAngerBehavior.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\Biome.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\BuildObject.cs" />
+    <Compile Include="Assets\Scriptable Objects\Definitions\Components\CursorComponent.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\Components\MeleeComponent.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\Components\PlaceableComponent.cs" />
+    <Compile Include="Assets\Scriptable Objects\Definitions\Components\RangeOverrideComponent.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\Components\SwingComponent.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\Components\ToolComponent.cs" />
-    <Compile Include="Assets\Scriptable Objects\Definitions\Components\UIComponent.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\Inventory.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\ItemObject.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\LootPool.cs" />

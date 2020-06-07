@@ -11,7 +11,8 @@ public class PlacingUI : MonoBehaviour
     PlayerController playerRef;
     [SerializeField][HideInInspector]
     public int gridSize;
-    private UIComponent activeUIComponent;
+    private CursorComponent activeUIComponent;
+    public bool validAction;
 
     private SpriteRenderer sr;
     
@@ -22,6 +23,7 @@ public class PlacingUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        validAction = false;
     }
 
     // Update is called once per frame
@@ -32,15 +34,17 @@ public class PlacingUI : MonoBehaviour
         else transform.position = new Vector3(mousePos.x, mousePos.y, 0);
         if (Vector2.Distance(playerRef.gameObject.transform.position,transform.position) <= playerRef.interactRange)
         {
-            sr.sprite = activeUIComponent.positiveSprite;
+            sr.sprite = activeUIComponent.closeSprite;
+            validAction = true;
         }
         else
         {
-            sr.sprite = activeUIComponent.rangedSprite;
+            sr.sprite = activeUIComponent.farSprite;
+            validAction = false;
         }
     }
 
-    public void updateUIComponent(UIComponent uc)
+    public void updateUIComponent(CursorComponent uc)
     {
         activeUIComponent = uc;
     }

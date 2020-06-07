@@ -18,6 +18,8 @@ public class HotbarUIComponents : BaseInventoryUIComponents
     [SerializeField]
     PlacingUI placeUI;
     PlayerController playerRef;
+    /*[SerializeField]
+    EquippedTool equippedItem;*/
     protected override void childConstructor()
     {
         activeSlotIndex = 0;
@@ -53,27 +55,31 @@ public class HotbarUIComponents : BaseInventoryUIComponents
     protected override void updateUI()
     {
         base.updateUI();
-        UIComponent uc;
-        if (activeInventory.items[activeSlotIndex] != null && (uc = activeInventory.items[activeSlotIndex].getComponent("UIComponent") as UIComponent))
+        CursorComponent uc;
+        if (GetActiveItem() != null && (uc = GetActiveItem().getComponent("CursorComponent") as CursorComponent))
         {
             placeUI.gameObject.SetActive(true);
             placeUI.updateUIComponent(uc);
         }
         else placeUI.gameObject.SetActive(false);
     }
+    
     public void Attack(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
-        Debug.Log("Time to attack!");
         MeleeComponent wc;
         if( activeInventory.items[activeSlotIndex] != null && (wc = activeInventory.items[activeSlotIndex].getComponent("MeleeComponent") as MeleeComponent))
         {
+            float range = playerRef.interactRange;
+            RangeOverrideComponent rc;
+            if (rc = GetActiveItem().getComponent("RangeOverrideComponent") as RangeOverrideComponent)
+                range = rc.range;
             RaycastHit2D hit;
+
             var ray = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Debug.Log("Has melee!");
-            if ((hit = Physics2D.Raycast(ray, Vector2.zero)) && hit.transform.CompareTag("Enemy"))
+            
+            if ((Vector2.Distance(playerRef.transform.position,ray) < range) && (hit = Physics2D.Raycast(ray, Vector2.zero)) && hit.transform.CompareTag("Enemy"))
             {
-                Debug.Log("Doing a melee!");
                 EnemyAI enem = hit.transform.gameObject.GetComponent<EnemyAI>();
                 enem.takeDamage(wc.damage);
             }

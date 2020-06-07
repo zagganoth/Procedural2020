@@ -73,7 +73,7 @@ public class Inventory : MonoBehaviour
             else
             {
                 if (position == -1)
-                    items[lastUsedIndex++] = item;
+                    items[firstUnusedIndex] = item;
                 else items[position] = item;
             }
         }

@@ -184,24 +184,15 @@ public class WallRuleTile : TileBase
                                                             (int)sprite.textureRect.width,
                                                             (int)sprite.textureRect.height);
                     croppedTexture.SetPixels(pixels);
-                    //croppedTexture.Resize(Mathf.FloorToInt(tileSize-5), Mathf.FloorToInt(tileSize-5));
                     croppedTexture.Apply();
                     GUI.DrawTexture(curRect, croppedTexture,ScaleMode.StretchToFill);
                     GUI.Label(curRect, "["+Enum.GetName(typeof(tileSpritePositions), i + offset)+"]",centeredImageStyle);
-                    /*Debug.Log("Getting sprite for asset " + targetObject.possibleSprites[i + offset]);
-                    centeredImageStyle. .normal.background = targetObject.possibleSprites[i + offset].texture;//AssetPreview.GetAssetPreview(targetObject.possibleSprites[i+offset]);
-                    GUI.Box(curRect, "", centeredImageStyle);*/
                     GUI.backgroundColor = new Color(0, 0, 0);
                 }
                 else
                     GUI.Box(curRect, "[" + Enum.GetName(typeof(tileSpritePositions), i + offset) + "]", centeredStyle);
                 DraggingAndDropping(curRect,i+offset);
-                /*
-                GUILayout.Label(
-                AssetPreview.GetAssetPreview(targetObject.relevantTile) as Texture2D,
-                GUILayout.Width(tileSize),
-                GUILayout.Width(tileSize));
-                */
+
                 GUILayout.Space(15);
             }
             GUI.backgroundColor = oldColor;

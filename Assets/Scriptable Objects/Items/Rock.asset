@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: Rock
   m_EditorClassIdentifier: 
   image: {fileID: -2182124076254010665, guid: bc4675dfc60629e42aad55c450fffc8f, type: 3}
-  maxStackSize: 1
-  count: 1
+  maxStackSize: 8
   components: []

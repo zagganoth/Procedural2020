@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51a5e6ac0fb5bab4396e7ec028ed7211, type: 3}
+  m_Name: Stone Pickaxe
+  m_EditorClassIdentifier: 
+  image: {fileID: 21300000, guid: 85b729fb53cce6b4a88fb344f0af1408, type: 3}
+  maxStackSize: 0
+  components:
+  - {fileID: 6115242941491766267}
+--- !u!114 &6115242941491766267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46fd64099c8f3eb49ae694c7ded6e7d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tag: CursorComponent
+  closeSprite: {fileID: 21300000, guid: 10d0a7c695097d14ebc4d3dd20fed193, type: 3}
+  farSprite: {fileID: -6142374563283994760, guid: 634828be704b9994292efea3522aabb6,
+    type: 3}
+  snapToGrid: 0

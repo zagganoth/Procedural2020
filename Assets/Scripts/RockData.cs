@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class RockData : MonoBehaviour
+public class RockData : EnemyAI
 {
     float counter;
     float delta;
@@ -15,17 +15,20 @@ public class RockData : MonoBehaviour
     bool incDist;
     bool decDist;
     Tilemap structureWalls;
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         counter = 0;
         delta = Mathf.PI * 2 / 360;
         incDist = false;
         decDist = false;
         Projectiles = new List<Item>();
+        health.gameObject.SetActive(false);
         //structureWalls = GameObject.FindWithTag("StructureWalls").GetComponent<Tilemap>();
     }
     private IEnumerator moveInArc(List<GameObject> projectiles, float smallestAngle, float baseProjectileDistance, Animator animator)
     {
+        health.gameObject.SetActive(true);
         while (true)
         {
             yield return new WaitForSeconds(0.01f);
