@@ -13,7 +13,7 @@ public class ItemObject : ScriptableObject
 {
     public Sprite image;
     public int maxStackSize;
-    public int count;
+    //public int count;
     [HideInInspector]
     [SerializeField]
     private List<ItemComponent> components;
@@ -33,11 +33,17 @@ public class ItemObject : ScriptableObject
     }
     private void Awake()
     {
-        maxStackSize = 1;
+        //maxStackSize = 1;
     }
     public ItemComponent getComponent(string tag)
     {
-        return componentsDict[tag];
+        ItemComponent retVal = new ItemComponent();
+        componentsDict.TryGetValue(tag, out retVal);
+        return retVal;
+    }
+    public bool hasComponent(string tag)
+    {
+        return componentsDict.ContainsKey(tag);
     }
     public virtual void use(Vector3 location, Tilemap tim, PlayerController playerRef)
     {
@@ -58,6 +64,7 @@ public class ItemObject : ScriptableObject
             so = new SerializedObject(targetObject);
             subEditors = new List<ItemComponent.ItemComponentEditor>();
             showingComponent = new List<bool>();
+            if (targetObject == null || targetObject.components == null) return;
             foreach (ItemComponent v in targetObject.components)
             {
                 subEditors.Add(CreateEditor(v) as ItemComponent.ItemComponentEditor);

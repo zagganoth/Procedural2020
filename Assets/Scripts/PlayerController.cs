@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private bool colliding;
     [SerializeField]
-    public int placeRange;
+    public float interactRange;
 
     direction currentDirection;
     Dictionary<direction, string> directionBools;

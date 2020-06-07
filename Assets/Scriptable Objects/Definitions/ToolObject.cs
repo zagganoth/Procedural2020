@@ -6,8 +6,5 @@ using UnityEngine;
 //[CreateAssetMenu(fileName = "New Tol", menuName = "Inventory System/Item")]
 public abstract class ToolObject : ItemObject
 {
-    public int range;
-    [SerializeField]
-    public AnimatorController animator;
 
 }

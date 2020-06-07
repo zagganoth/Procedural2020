@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Wood Wall
   m_EditorClassIdentifier: 
   image: {fileID: -8184606529850412029, guid: 89f1d7d39d02174418b0f1bdfd1a17cb, type: 3}
-  maxStackSize: 1
-  count: 0
+  maxStackSize: 999
   components:
   - {fileID: 3630815157679613747}
+  - {fileID: 6077031205829218637}
 --- !u!114 &3630815157679613747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31,3 +31,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tag: PlaceableComponent
   tile: {fileID: 11400000, guid: 7980623c9e1955f48aebb8a38a04db28, type: 2}
+--- !u!114 &6077031205829218637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88b7b2895df3e7f488f2020ce1e32896, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tag: UIComponent
+  positiveSprite: {fileID: -6059089116221501004, guid: 7883cd8e50ebbc64e9ca7b691f13988d,
+    type: 3}
+  rangedSprite: {fileID: 4123005372420795204, guid: 7883cd8e50ebbc64e9ca7b691f13988d,
+    type: 3}
+  snapToGrid: 1

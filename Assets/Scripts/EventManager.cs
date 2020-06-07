@@ -52,8 +52,6 @@ public class EventManager : MonoBehaviour
     }
     public void fireRightClickedEvent(InputAction.CallbackContext context)
     {
-
-        //Debug.Log(context);
         if (!context.performed) return;
         OnRightClick?.Invoke(this, new OnRightClickArgs { context = context, clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition) });  ;
     }

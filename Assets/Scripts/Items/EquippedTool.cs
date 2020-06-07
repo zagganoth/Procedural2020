@@ -9,7 +9,6 @@ public class EquippedTool : MonoBehaviour
     [SerializeField]
     PlayerInventoryUI inventoryUI;
     AnimatorController currentController;
-    ToolObject tool;
     Animator anim;
     ItemObject item;
     SpriteRenderer sr;
@@ -24,14 +23,15 @@ public class EquippedTool : MonoBehaviour
     }
     protected  void Start()
     {
+        gameObject.SetActive(false);
     }
     void Initialize()
     {
         gameObject.SetActive(true);
-        tool = item as ToolObject;
-        if (currentController != tool.animator)
+        SwingComponent sc;
+        if((sc = item.getComponent("SwingComponent") as SwingComponent) && sc.animator != currentController)
         {
-            currentController = tool.animator;
+            currentController = sc.animator;
             anim.runtimeAnimatorController = currentController;
             sr.sprite = item.image;
         }
@@ -39,17 +39,19 @@ public class EquippedTool : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Enemy"))
+        if (gameObject.activeSelf && collision.gameObject.CompareTag("Enemy"))
         {
             Destroy(collision.gameObject);
         }
     }
     public void Use(direction dir)
     {
-
+        gameObject.SetActive(true);
         item = inventoryUI.GetActiveItem();
-        Type itemType = item.GetType();
-        if (itemType!=typeof(ToolObject) && !itemType.IsSubclassOf(typeof(ToolObject))) return;
+        SwingComponent sc;
+        if (item == null || !(sc = item.getComponent("SwingComponent") as SwingComponent)) return;
+        //Type itemType = item.GetType();
+        //if (itemType!=typeof(ToolObject) && !itemType.IsSubclassOf(typeof(ToolObject))) return;
         Initialize();
         anim.SetTrigger("use");
         switch(dir)
@@ -68,11 +70,12 @@ public class EquippedTool : MonoBehaviour
                 break;
         }
 
-        StartCoroutine(endSwing());
+        StartCoroutine(endSwing(sc.swingTime));
     }
-    private IEnumerator endSwing()
+    private IEnumerator endSwing(float swingTime)
     {
-        yield return new WaitForSeconds(1f);
+
+        yield return new WaitForSeconds(swingTime);//1f);
         gameObject.SetActive(false);
     }
     private void Update()

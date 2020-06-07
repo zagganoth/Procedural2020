@@ -9,6 +9,9 @@ public class RockData : MonoBehaviour
     float delta;
     [SerializeField]
     public GameObject projectilePrefab;
+    [SerializeField]
+    public Item drop;
+    private List<Item> Projectiles;
     bool incDist;
     bool decDist;
     Tilemap structureWalls;
@@ -18,6 +21,7 @@ public class RockData : MonoBehaviour
         delta = Mathf.PI * 2 / 360;
         incDist = false;
         decDist = false;
+        Projectiles = new List<Item>();
         //structureWalls = GameObject.FindWithTag("StructureWalls").GetComponent<Tilemap>();
     }
     private IEnumerator moveInArc(List<GameObject> projectiles, float smallestAngle, float baseProjectileDistance, Animator animator)
@@ -29,6 +33,7 @@ public class RockData : MonoBehaviour
             int i = 0;
             foreach (var projectile in projectiles)
             {
+                if (!projectile) continue;
                 destPos = new Vector3(Mathf.Cos(smallestAngle * i + counter) * baseProjectileDistance, Mathf.Sin(smallestAngle * i + counter) * baseProjectileDistance);
                 projectile.transform.position = Vector3.Lerp(projectile.transform.position, animator.gameObject.transform.position + destPos, 1f);
                 i++;
@@ -60,6 +65,20 @@ public class RockData : MonoBehaviour
     }
     public void call_arc(List<GameObject> projectiles,float smallestAngle,float baseProjectileDistance, Animator animator)
     {
+        int index = 0;
+        foreach(var proj in projectiles)
+        {
+            Projectiles.Add(proj.GetComponent<Item>());
+            Projectiles[index++].pickable = false;
+        }
         StartCoroutine(moveInArc(projectiles, smallestAngle, baseProjectileDistance, animator));
+    }
+    private void OnDestroy()
+    {
+        //if(drop!=null)Instantiate(drop, transform.position, Quaternion.identity);
+        foreach(var proj in Projectiles)
+        {
+            proj.pickable = true;
+        }
     }
 }

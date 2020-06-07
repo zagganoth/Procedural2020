@@ -136,6 +136,7 @@ public class WallRuleTile : TileBase
         }
         public override void OnInspectorGUI()
         {
+            serializedObject.Update();
             DrawDefaultInspector();
             tileSize = EditorGUILayout.Slider(tileSize, 0, 128);
 
@@ -147,6 +148,7 @@ public class WallRuleTile : TileBase
             {
                 targetObject.ResetSprites();
             }
+            serializedObject.ApplyModifiedProperties();
         }
         public void DrawBoxes(int count,int offset=0,int spaceAtIndex=int.MaxValue)
         {
@@ -235,6 +237,7 @@ public class WallRuleTile : TileBase
                         //subEditors.Add(CreateEditor(targetObject.components[targetObject.components.Count - 1]) as ItemComponent.ItemComponentEditor);
                         //showingComponent.Add(false);
                         EditorUtility.SetDirty(this);
+                        EditorUtility.SetDirty(targetObject);
                         //EditorUtility.SetDirty();
                         /*string _path = AssetDatabase.GetAssetPath(target);
                         AssetDatabase.AddObjectToAsset(targetObject.components[targetObject.components.Count - 1], _path);

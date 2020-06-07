@@ -26,6 +26,7 @@ public class ChestManager : MonoBehaviour
     }
     private void OnRightClick(object sender, EventArgs e)
     {
+
         if(hovering)
         {
             chestInventoryUI.ToggleChest(this);
@@ -42,7 +43,7 @@ public class ChestManager : MonoBehaviour
     private void initializeChestInventory()
     {
         chestId = -1;
-        chestInventory = ScriptableObject.CreateInstance<Inventory>();
+        chestInventory = new Inventory();//ScriptableObject.CreateInstance<Inventory>();
         chestInventory.initialize(defaultChestInventorySize);
         //inventoryItems = chestInventory.items;
     }

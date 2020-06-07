@@ -11,6 +11,7 @@ public abstract class BaseInventoryUIComponents : MonoBehaviour
     public List<DragButton> slots;
     public List<Image> slotImages;
     public List<Image> slotBackgrounds;
+    public List<Text> slotCounts;
 
     protected abstract void childConstructor();
     public abstract Inventory GetRelevantInventory();
@@ -29,6 +30,7 @@ public abstract class BaseInventoryUIComponents : MonoBehaviour
         slotImages = new List<Image>();
         slotBackgrounds = new List<Image>();
         slots = new List<DragButton>(GetComponentsInChildren<DragButton>());
+        slotCounts = new List<Text>();
         Image[] childComponents;
         int index = 0;
         foreach (var slot in slots)
@@ -37,6 +39,7 @@ public abstract class BaseInventoryUIComponents : MonoBehaviour
             childComponents = slot.GetComponentsInChildren<Image>(includeInactive: true);
             slotImages.Add(childComponents[1]);
             slotBackgrounds.Add(childComponents[0]);
+            slotCounts.Add(slot.GetComponentInChildren<Text>(includeInactive: true));
             index++;
         }
         
@@ -70,14 +73,16 @@ public abstract class BaseInventoryUIComponents : MonoBehaviour
                 || activeInventory.items[index] == null)
             {
                 slot.gameObject.SetActive(false);
+                slotCounts[index].gameObject.SetActive(false);
             }
             else
             {
                 slot.gameObject.SetActive(true);
                 slot.sprite = activeInventory.items[index].image;
+                if(activeInventory.items[index].maxStackSize > 1) slotCounts[index].gameObject.SetActive(true);
+                slotCounts[index].text = activeInventory.itemCounts[index].ToString();
             }
             childUIUpdateStep(index);
-            //if (usingHotbar) SetActiveSlotUI(index);
             index++;
         }
     }

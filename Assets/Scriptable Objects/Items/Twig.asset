@@ -1,24 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b259813d57cf49642919455eda94472d, type: 3}
-  m_Name: Bow
-  m_EditorClassIdentifier: 
-  image: {fileID: -4003794560271073424, guid: a23f2e9b441dd61459de1406c56e68d5, type: 3}
-  maxStackSize: 1
-  components:
-  - {fileID: 4772385655148048435}
-  - {fileID: 5759495421498541125}
-  damage: 0
---- !u!114 &4772385655148048435
+--- !u!114 &-5839626897984130099
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -31,11 +13,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tag: UIComponent
-  positiveSprite: {fileID: -5829914293868266466, guid: 634828be704b9994292efea3522aabb6,
+  positiveSprite: {fileID: -2565141449147483526, guid: 634828be704b9994292efea3522aabb6,
     type: 3}
-  negativeSprite: {fileID: -6142374563283994760, guid: 634828be704b9994292efea3522aabb6,
+  rangedSprite: {fileID: -5829914293868266466, guid: 634828be704b9994292efea3522aabb6,
     type: 3}
---- !u!114 &5759495421498541125
+  snapToGrid: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51a5e6ac0fb5bab4396e7ec028ed7211, type: 3}
+  m_Name: Twig
+  m_EditorClassIdentifier: 
+  image: {fileID: 1674458067197720234, guid: 5673a65368f92ac498d4df392d847aa9, type: 3}
+  maxStackSize: 1
+  components:
+  - {fileID: 1815754158544053429}
+  - {fileID: -5839626897984130099}
+--- !u!114 &1815754158544053429
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -48,6 +48,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tag: SwingComponent
-  swingTime: 1
+  swingTime: 0.3
   range: 1
-  animator: {fileID: 9100000, guid: 69b56bd563611d843abda9c3ea017fc1, type: 2}
+  animator: {fileID: 9100000, guid: fe641dddcff369b419a45f9a60df25a8, type: 2}

@@ -4,10 +4,12 @@ using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.UI;
 [CreateAssetMenu(fileName = "New Inventory", menuName="Custom/Inventory System/Inventory")]
-public class Inventory : ScriptableObject
+public class Inventory : MonoBehaviour
 {
     [SerializeField]
     public List<ItemObject> items;
+    [SerializeField]
+    public List<int> itemCounts;
     [SerializeField]
     private int size;
     private int lastUsedIndex;
@@ -19,6 +21,7 @@ public class Inventory : ScriptableObject
         lastUsedIndex = 0;
         usedSlots = 0;
         items = new List<ItemObject>();
+        itemCounts = new List<int>();
         initializeInventory();
     }
     public bool isFull()
@@ -30,6 +33,7 @@ public class Inventory : ScriptableObject
         for(var i = 0; i < size;i++)
         {
             items.Add(null);
+            itemCounts.Add(1);
         }
 
     }
@@ -65,7 +69,7 @@ public class Inventory : ScriptableObject
         }
         else
         {
-            if (items[lIndex].count < items[lIndex].maxStackSize) items[lIndex].count++;
+            if (itemCounts[lIndex] < items[lIndex].maxStackSize) itemCounts[lIndex]++;
             else
             {
                 if (position == -1)
@@ -80,9 +84,9 @@ public class Inventory : ScriptableObject
     {
         if (items.Count == 0) return;
         int lIndex = items.IndexOf(item);
-        if (lIndex != -1 && items[lIndex].count > 1)
+        if (lIndex != -1 && itemCounts[lIndex] > 1)
         {
-            items[lIndex].count -= 1;
+            itemCounts[lIndex] -= 1;
         }
         else
         {

@@ -9,6 +9,8 @@ public class Item : MonoBehaviour
 
     [SerializeField]
     public ItemObject item;
+    [SerializeField]
+    public bool pickable = true;
     SpriteRenderer sr;
     virtual protected void Awake()
     {
@@ -24,7 +26,7 @@ public class Item : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.CompareTag("Player"))
+        if(pickable && collision.gameObject.CompareTag("Player"))
         {
             EventManager.instance.fireAddItemToInventoryEvent(item,collision.gameObject.GetComponent<PlayerController>());
             Destroy(gameObject);

@@ -278,9 +278,10 @@ public class WorldGenerator : MonoBehaviour
     }
     private void SetTilesForChunk(HashSet<int> modifiedTilemaps,List<TileBase[]> tileArrays,List<Vector3Int[]> positionArrays)
     {
+        int index = 0;
         foreach (var ind2 in modifiedTilemaps)
         {
-            tilemaps[ind2].SetTiles(positionArrays[ind2], tileArrays[ind2]);
+            tilemaps[ind2].SetTiles(positionArrays[index], tileArrays[index++]);
         }
     }
     private void GenerateStructures(chunkCenter cCenter, List<float> noiseValues)

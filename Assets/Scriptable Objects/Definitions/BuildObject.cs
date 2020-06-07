@@ -12,7 +12,7 @@ public class BuildObject : ItemObject
         Vector3Int floorLoc = Vector3Int.FloorToInt(location);
         float dist = Vector3.Distance(playerRef.gameObject.transform.position, floorLoc);
         dist -= 10;
-        if (dist < playerRef.placeRange)
+        if (dist < playerRef.interactRange)
         tim.SetTile(floorLoc,tile);
     }
     /*
