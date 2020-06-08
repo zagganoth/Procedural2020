@@ -18,6 +18,20 @@ MonoBehaviour:
   rangedSprite: {fileID: -5829914293868266466, guid: 634828be704b9994292efea3522aabb6,
     type: 3}
   snapToGrid: 0
+--- !u!114 &-103575425771574335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2019241e880beb4e8f453cfd543727d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tag: MeleeComponent
+  damage: 10
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35,6 +49,7 @@ MonoBehaviour:
   components:
   - {fileID: 1815754158544053429}
   - {fileID: 3966090885456150718}
+  - {fileID: -103575425771574335}
 --- !u!114 &1815754158544053429
 MonoBehaviour:
   m_ObjectHideFlags: 0

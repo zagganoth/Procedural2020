@@ -27,10 +27,19 @@ public class EventManager : MonoBehaviour
     {
         public Vector3Int pos;
     }
+
+    [Serializable]
+    public class OnLeftClickArgs : EventArgs
+    {
+        public HotbarUIComponents invRef;
+        public ItemObject mineObject;
+        public int instanceId;
+    }
     public event EventHandler<OnRightClickArgs> OnRightClick;
     public event EventHandler<OnInventoryActionArgs> OnInventoryAction;
 
     public event EventHandler<OnCleanupRequiredArgs> OnCleanupRequiredAction;
+    public event EventHandler<OnLeftClickArgs> OnSuccessfulLeftClick;
     private void Awake()
     {
         if(instance != null && instance!=this)
@@ -64,5 +73,10 @@ public class EventManager : MonoBehaviour
     public void fireCleanupTileAction(Vector3 position)
     {
         OnCleanupRequiredAction?.Invoke(this, new OnCleanupRequiredArgs { pos = Vector3Int.FloorToInt(position) });
+    }
+    
+    public void fireSuccessfulLeftClick(HotbarUIComponents uic, ItemObject curObject, int instanceId)
+    {
+        OnSuccessfulLeftClick?.Invoke(this, new OnLeftClickArgs { invRef = uic, mineObject = curObject, instanceId = instanceId });
     }
 }

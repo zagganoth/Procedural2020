@@ -46,7 +46,6 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
-            Debug.Log("Hurting!");
             anim.SetTrigger("Hurt");
             onCooldown = true;
             StartCoroutine(coolDown());

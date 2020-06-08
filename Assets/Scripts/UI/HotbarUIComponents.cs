@@ -68,20 +68,29 @@ public class HotbarUIComponents : BaseInventoryUIComponents
     {
         if (!context.performed) return;
         MeleeComponent wc;
-        if( activeInventory.items[activeSlotIndex] != null && (wc = activeInventory.items[activeSlotIndex].getComponent("MeleeComponent") as MeleeComponent))
+        ItemObject activeItem = GetActiveItem();
+        if( activeItem != null)
         {
             float range = playerRef.interactRange;
             RangeOverrideComponent rc;
-            if (rc = GetActiveItem().getComponent("RangeOverrideComponent") as RangeOverrideComponent)
+            if (rc = activeItem.getComponent("RangeOverrideComponent") as RangeOverrideComponent)
                 range = rc.range;
             RaycastHit2D hit;
 
             var ray = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             
-            if ((Vector2.Distance(playerRef.transform.position,ray) < range) && (hit = Physics2D.Raycast(ray, Vector2.zero)) && hit.transform.CompareTag("Enemy"))
+            if ((Vector2.Distance(playerRef.transform.position,ray) < range) && (hit = Physics2D.Raycast(ray, Vector2.zero)))
             {
-                EnemyAI enem = hit.transform.gameObject.GetComponent<EnemyAI>();
-                enem.takeDamage(wc.damage);
+                if ((wc = activeItem.getComponent("MeleeComponent") as MeleeComponent) && hit.transform.CompareTag("Enemy"))
+                {
+                    EnemyAI enem = hit.transform.gameObject.GetComponent<EnemyAI>();
+                    enem.takeDamage(wc.damage);
+                }
+                LeftClickable lef;
+                if (lef = hit.transform.gameObject.GetComponent<LeftClickable>())
+                {
+                    EventManager.instance.fireSuccessfulLeftClick(this, activeItem,hit.transform.gameObject.GetInstanceID());
+                }
             }
         }
     }

@@ -14,7 +14,7 @@ public class healthbar : MonoBehaviour
     float curHealth;
     public bool dead;
     // Start is called before the first frame update
-    private void Start()
+    private void Awake()
     {
         baseScaleX = positive.gameObject.transform.localScale.x;
         baseScaleY = positive.gameObject.transform.localScale.y;
@@ -26,7 +26,6 @@ public class healthbar : MonoBehaviour
         if (curHealth <= 0)
         {
             dead = true;
-            return;
         }
         positive.gameObject.transform.localScale = new Vector3(positive.gameObject.transform.localScale.x - ((damage / baseHealth) * baseScaleX), baseScaleY);
     }

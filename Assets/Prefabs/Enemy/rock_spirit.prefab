@@ -118,6 +118,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 780cfc92b6c8574448dd4aa0d0495a76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aggroRange: 0
+  speed: 0
+  health: {fileID: 0}
+  damageCooldownTime: 0.5
+  deathAnimationTime: 0
+  damagePauseTime: 0
+  pausedAfterDamage: 0
   projectilePrefab: {fileID: 5820884287196683739, guid: 0b695862c6c1f364aaecc20fc5327edd,
     type: 3}
   drop: {fileID: -8948170883718133648, guid: 0b695862c6c1f364aaecc20fc5327edd, type: 3}

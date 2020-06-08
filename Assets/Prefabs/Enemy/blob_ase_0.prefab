@@ -119,7 +119,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aggroRange: 3
-  speed: 0.003
+  speed: 0.01
   health: {fileID: 0}
   damageCooldownTime: 0.7
   deathAnimationTime: 0.4

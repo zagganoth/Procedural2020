@@ -63,7 +63,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\BlobAI.cs" />
     <Compile Include="Assets\Classes\Chunk.cs" />
     <Compile Include="Assets\Classes\ItemComponent.cs" />
     <Compile Include="Assets\Classes\Noise.cs" />
@@ -109,8 +108,6 @@
     <Compile Include="Assets\External\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
     <Compile Include="Assets\External\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
     <Compile Include="Assets\Input\InputMaster.cs" />
-    <Compile Include="Assets\PlacingUI.cs" />
-    <Compile Include="Assets\RockAngerBehavior.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\Biome.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\BuildObject.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\Components\CursorComponent.cs" />
@@ -131,32 +128,36 @@
     <Compile Include="Assets\Scripts\ChestManager.cs" />
     <Compile Include="Assets\Scripts\ChunkPersistenceHandler.cs" />
     <Compile Include="Assets\Scripts\CleanupTiles.cs" />
-    <Compile Include="Assets\Scripts\EnemyAI.cs" />
-    <Compile Include="Assets\Scripts\EnemyCollisionHandler.cs" />
+    <Compile Include="Assets\Scripts\Enemies\BlobAI.cs" />
+    <Compile Include="Assets\Scripts\Enemies\EnemyAI.cs" />
+    <Compile Include="Assets\Scripts\Enemies\RockAngerBehavior.cs" />
+    <Compile Include="Assets\Scripts\Enemies\RockData.cs" />
     <Compile Include="Assets\Scripts\EnemySpawner.cs" />
     <Compile Include="Assets\Scripts\EventManager.cs" />
     <Compile Include="Assets\Scripts\Items\EquippedTool.cs" />
     <Compile Include="Assets\Scripts\Items\Item.cs" />
     <Compile Include="Assets\Scripts\LayerSort.cs" />
+    <Compile Include="Assets\Scripts\LeftClickable.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
-    <Compile Include="Assets\Scripts\RockData.cs" />
+    <Compile Include="Assets\Scripts\Resource.cs" />
+    <Compile Include="Assets\Scripts\SitBehavior.cs" />
     <Compile Include="Assets\Scripts\StructureSaver.cs" />
-    <Compile Include="Assets\Scripts\TrinketPouchUIComponents.cs" />
     <Compile Include="Assets\Scripts\UI\BaseInventoryUIComponents.cs" />
     <Compile Include="Assets\Scripts\UI\ChestInventoryUIComponents.cs" />
     <Compile Include="Assets\Scripts\UI\DragButton.cs" />
     <Compile Include="Assets\Scripts\UI\DraggableObject.cs" />
     <Compile Include="Assets\Scripts\UI\HotbarUIComponents.cs" />
     <Compile Include="Assets\Scripts\UI\MainInventoryUIComponents.cs" />
+    <Compile Include="Assets\Scripts\UI\PlacingUI.cs" />
     <Compile Include="Assets\Scripts\UI\PlayerInventoryUI.cs" />
+    <Compile Include="Assets\Scripts\UI\TrinketPouchUIComponents.cs" />
+    <Compile Include="Assets\Scripts\UI\UIParent.cs" />
+    <Compile Include="Assets\Scripts\UI\healthbar.cs" />
     <Compile Include="Assets\Scripts\WorldGenerator.cs" />
-    <Compile Include="Assets\SitBehavior.cs" />
     <Compile Include="Assets\Statemachines\Enemy\ChaseBehavior.cs" />
     <Compile Include="Assets\Systems\AttackSystem.cs" />
     <Compile Include="Assets\Systems\CharacterMovementSystem.cs" />
     <Compile Include="Assets\Systems\InputManagingSystem.cs" />
-    <Compile Include="Assets\UIParent.cs" />
-    <Compile Include="Assets\healthbar.cs" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
     <None Include="Assets\Packages\protobuf-net.2.4.6\lib\net40\protobuf-net.xml" />
     <None Include="Assets\External\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />

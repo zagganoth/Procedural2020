@@ -28,7 +28,7 @@ public class RockData : EnemyAI
     }
     private IEnumerator moveInArc(List<GameObject> projectiles, float smallestAngle, float baseProjectileDistance, Animator animator)
     {
-        health.gameObject.SetActive(true);
+
         while (true)
         {
             yield return new WaitForSeconds(0.01f);
@@ -44,14 +44,14 @@ public class RockData : EnemyAI
             counter += delta;
             if(counter>=(Mathf.PI * 2 /360 * 480))
             {
-                //Debug.Log("Flip!");
+                yield return new WaitForSeconds(1f);
                 delta = Mathf.Clamp(-delta * 1.5f,-0.02f,0.02f);
                 decDist = false;
                 incDist = true;
             }
             else if(counter <0)
             {
-                //Debug.Log("break!");
+                yield return new WaitForSeconds(1f);
                 delta = delta = Mathf.Clamp(-delta * 1.75f,-0.02f,0.02f);
                 decDist = true;
                 incDist = false;
@@ -65,6 +65,11 @@ public class RockData : EnemyAI
                 baseProjectileDistance += delta/3;
             }
         }
+    }
+    public override void takeDamage(float damage)
+    {
+        if(!health.gameObject.activeSelf)health.gameObject.SetActive(true);
+        base.takeDamage(damage);
     }
     public void call_arc(List<GameObject> projectiles,float smallestAngle,float baseProjectileDistance, Animator animator)
     {

@@ -36,7 +36,7 @@ MonoBehaviour:
   - {fileID: 2399009276257945432}
   - {fileID: 2334446659036438039}
   - {fileID: -183194686830467182}
-  damage: 7
+  damage: 50
 --- !u!114 &1422601756467768345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,7 +68,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tag: MeleeComponent
-  damage: 7
+  damage: 50
 --- !u!114 &2399009276257945432
 MonoBehaviour:
   m_ObjectHideFlags: 0
