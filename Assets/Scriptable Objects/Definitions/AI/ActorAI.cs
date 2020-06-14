@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.Callbacks;
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -27,6 +28,18 @@ public class AssetHandler
 public class ActorAI : ScriptableObject
 {
     public AIGraphContainer editorGraphContainer;
+    public ActorStateNodeData head;
+    private void Execute(GameObject attachedObject)
+    {
+        if (editorGraphContainer != null && editorGraphContainer.nodeData.Any(x => x.GUID == "0"))
+        {
+            head = editorGraphContainer.nodeData.Find(x => x.GUID == "0");
+            /*foreach (var condPort in head.ports)
+            {
+                if(condPort.cond.Accept(attachedObject))condPort.
+            }*/
+        }
+    }
 #if UNITY_EDITOR
     [CustomEditor(typeof(ActorAI), true)]
     public class ActorAIEditor : Editor
@@ -40,4 +53,4 @@ public class ActorAI : ScriptableObject
         }
     }
 #endif
-}
+} 

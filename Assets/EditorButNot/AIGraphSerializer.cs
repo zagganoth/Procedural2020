@@ -32,31 +32,17 @@ public class AIGraphSerializer
         Edges = targetGraphView.edges.ToList();
         Nodes = targetGraphView.nodes.ToList().Cast<ActorStateNode>().ToList();
     }
-
+    
     public void SaveGraph(ActorAI destObject)
     {
+        
         if (!Edges.Any() && !Nodes.Any()) return;
         var inst = ScriptableObject.CreateInstance<AIGraphContainer>();
-        if (Edges.Any())
-        {
-            var connectedPorts = Edges.Where(x => x.input.node != null).ToArray();
-            ActorStateNode inputNode;
-            ActorStateNode outputNode;
-            for (int i = 0; i < connectedPorts.Length; i++)
-            {
-                outputNode = connectedPorts[i].output.node as ActorStateNode;
-                inputNode = connectedPorts[i].input.node as ActorStateNode;
+        SaveEdges();
 
-                inst.nodeLinks.Add(new ActorStateNodeLinkData
-                {
-                    sourceNodeGuid = outputNode.GUID,
-                    portName = connectedPorts[i].output.portName,
-                    destNodeGuid = inputNode.GUID
-                });
-            }
-        }
         List<AINodePortData> npd;
-        foreach(var stateNode in Nodes.Where(node => !node.EntryPoint))
+        //destObject.stateTransitions.Add(null, Nodes.Find(x => x.EntryPoint).outputContainer.ElementAt)
+        foreach(var stateNode in Nodes)
         {
             npd = new List<AINodePortData>();
             _targetGraphView.ports.ForEach((x) =>
@@ -78,23 +64,25 @@ public class AIGraphSerializer
                         npd.Add(new AINodePortData
                         {
                             cond = cond,
-                            portName = x.portName
+                            portName = x.portName,
+                            
                         });
                     }
                 }
             });
-            Debug.Log(npd.Count);
             inst.nodeData.Add(new ActorStateNodeData
             {
                 GUID = stateNode.GUID,
                 relevantState = stateNode.relevantState,
                 position = stateNode.GetPosition().position,
-                title = stateNode.title,
+                title = stateNode.nodeName,
                 ports = npd
             });    
         }
-        if(destObject.editorGraphContainer)
+        if (destObject.editorGraphContainer)
+        {
             AssetDatabase.RemoveObjectFromAsset(destObject.editorGraphContainer);
+        }
         AssetDatabase.AddObjectToAsset(inst, AssetDatabase.GetAssetPath(destObject));
         destObject.editorGraphContainer = inst;
         _containerCache = inst;
@@ -102,6 +90,30 @@ public class AIGraphSerializer
         AssetDatabase.SaveAssets();
     }
     
+    public void SaveEdges()
+    {
+        if (Edges.Any())
+        {
+            //var firstOutput = Edges.First(x => (x.input.node as ActorStateNode).EntryPoint);
+            //firstOutput.output 
+            //destObject.stateTransitions.Add()
+            var connectedPorts = Edges.Where(x => x.input.node != null).ToArray();
+            ActorStateNode inputNode;
+            ActorStateNode outputNode;
+            for (int i = 0; i < connectedPorts.Length; i++)
+            {
+                outputNode = connectedPorts[i].output.node as ActorStateNode;
+                inputNode = connectedPorts[i].input.node as ActorStateNode;
+
+                inst.nodeLinks.Add(new ActorStateNodeLinkData
+                {
+                    sourceNodeGuid = outputNode.GUID,
+                    portName = connectedPorts[i].output.portName,
+                    destNodeGuid = inputNode.GUID
+                });
+            }
+        }
+    }
     public void LoadGraph(ActorAI sourceObject)
     {
         if(_targetGraphView==null)
@@ -113,8 +125,10 @@ public class AIGraphSerializer
         _containerCache = sourceObject.editorGraphContainer;
         if (!_containerCache) return;
         ClearGraph();
-        ConnectNodes();
         CreateNodes();
+        UpdateVars(_targetGraphView);
+        ConnectNodes();
+
 
     }
 
@@ -125,11 +139,11 @@ public class AIGraphSerializer
             Nodes.Find(x => x.EntryPoint).GUID = _containerCache.nodeLinks[0].sourceNodeGuid;
         foreach (var perNode in Nodes)
         {
-            if (perNode.EntryPoint)
+            /*if (perNode.EntryPoint)
             {
                 perNode.RefreshPorts();
                 continue;
-            }
+            }*/
             Edges.Where(x => x.input.node == perNode).ToList()
                 .ForEach(edge => _targetGraphView.RemoveElement(edge));
             _targetGraphView.RemoveElement(perNode);
@@ -143,7 +157,15 @@ public class AIGraphSerializer
         List<AINodePortData> nodePorts;
         foreach (var node in _containerCache.nodeData)
         {
+            if (node.GUID == "0")
+            {
+                tempNode = _targetGraphView.GenerateEntryPointNode(node.ports.First().cond);
+                tempNode.SetPosition(new Rect(node.position, _targetGraphView.defaultNodeSize));
+                _targetGraphView.AddElement(tempNode);
+                continue;
+            }
             tempNode = _targetGraphView.GenerateAINode(node.title);
+            
             tempNode.GUID = node.GUID;
             tempNode.SetPosition(new Rect(node.position, _targetGraphView.defaultNodeSize));
             _targetGraphView.AddElement(tempNode);
@@ -151,6 +173,8 @@ public class AIGraphSerializer
             //nodePorts = _containerCache.nodeData.Where(x => x.GUID == node.GUID).ToList();
             nodePorts = node.ports;
             nodePorts.ForEach(x => _targetGraphView.AddConditionPort(tempNode,x.portName,x.cond));
+            tempNode.RefreshPorts();
+            tempNode.RefreshExpandedState();
         }
         /*
 
@@ -181,31 +205,37 @@ public class AIGraphSerializer
 
             _targetGraphView.Refresh();
         }*/
-        /*
         for(var i = 0; i < Nodes.Count;i++)
         {
+
+            if (!_containerCache.nodeLinks.Any(x => x.sourceNodeGuid == Nodes[i].GUID))
+            {
+                continue;
+            }
             var connections = _containerCache.nodeLinks.Where(x => x.sourceNodeGuid == Nodes[i].GUID).ToList();
             for(int j = 0; j < connections.Count; j++)
             {
                 var targetNodeGuid = connections[j].destNodeGuid;
                 var targetNode = Nodes.First(x => x.GUID == targetNodeGuid);
-                LinkNodes(Nodes[i].outputContainer[j].Q<Port>(), (Port) targetNode.inputContainer[0]);
-                targetNode.SetPosition(new Rect(_containerCache.nodeData.First(x => x.GUID == targetNodeGuid).position, _targetGraphView.defaultNodeSize));
+                LinkNodes(Nodes[i].outputContainer[j].Q<Port>(), (Port) targetNode.inputContainer.ElementAt(0));
+                targetNode.RefreshExpandedState();
+                targetNode.RefreshPorts();
+                //targetNode.SetPosition(new Rect(_containerCache.nodeData.First(x => x.GUID == targetNodeGuid).position, _targetGraphView.defaultNodeSize));
             }
-        }*/
+        }
     }
 
     private void LinkNodes(Port output, Port input)
     {
-        Debug.Log("Linking nodes!");
         var tempEdge = new Edge()
         {
             output = output,
             input = input
         };
 
-        tempEdge?.input.Connect(tempEdge);
-        tempEdge?.output.Connect(tempEdge);
+        tempEdge.input.Connect(tempEdge);
+        tempEdge.output.Connect(tempEdge);
+        
         _targetGraphView.Add(tempEdge);
     }
 }

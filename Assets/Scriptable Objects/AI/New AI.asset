@@ -10,10 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cbb25f861b2f8564bb88ff91d7bc2aa5, type: 3}
-  m_Name: Test
+  m_Name: New Ai
   m_EditorClassIdentifier: 
-  editorGraphContainer: {fileID: 6777714720626833269}
---- !u!114 &6777714720626833269
+  editorGraphContainer: {fileID: 102743786149597624}
+  head:
+    GUID: 0
+    relevantState: {fileID: 0}
+    title: 
+    position: {x: 100, y: 200}
+    ports:
+    - priority: 0
+      cond: {fileID: 0}
+      portName: Next
+      destPortGuid: 
+--- !u!114 &102743786149597624
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -25,23 +35,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ffedf76a9e38254dbbea2992110ea25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nodeLinks: []
+  nodeLinks:
+  - sourceNodeGuid: 0
+    portName: Next
+    destNodeGuid: 6c9af0c0-5caa-41ae-b036-f9a0ad2f99b1
   nodeData:
-  - GUID: 9616bf4e-6373-4081-9864-f1c5c98f2dee
+  - GUID: 0
     relevantState: {fileID: 0}
-    title: New AI State
-    position: {x: 689, y: 145}
-    ports: []
-  - GUID: b08493e2-418f-4097-921c-092d1f426e51
-    relevantState: {fileID: 0}
-    title: New AI State
-    position: {x: 299, y: 192}
+    title: 
+    position: {x: 100, y: 200}
     ports:
-    - cond: {fileID: 11400000, guid: 5a675ffa992c2914fae138036cdc95af, type: 2}
+    - priority: 0
+      cond: {fileID: 0}
+      portName: Next
+      destPortGuid: 
+  - GUID: 6c9af0c0-5caa-41ae-b036-f9a0ad2f99b1
+    relevantState: {fileID: 0}
+    title: Testring
+    position: {x: 385, y: 176}
+    ports:
+    - priority: 0
+      cond: {fileID: 11400000, guid: 5a675ffa992c2914fae138036cdc95af, type: 2}
       portName: Condition 0
-    - cond: {fileID: 11400000, guid: 5a675ffa992c2914fae138036cdc95af, type: 2}
-      portName: Condition 1
-    - cond: {fileID: 11400000, guid: 5a675ffa992c2914fae138036cdc95af, type: 2}
-      portName: Condition 2
-    - cond: {fileID: 11400000, guid: 5a675ffa992c2914fae138036cdc95af, type: 2}
-      portName: Condition 3
+      destPortGuid: 

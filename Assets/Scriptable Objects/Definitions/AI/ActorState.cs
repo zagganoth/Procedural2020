@@ -6,22 +6,42 @@ using UnityEngine;
 [Serializable]
 public abstract class ActorState : MonoBehaviour
 {
-    protected virtual void OnStateEnter()
+    public List<KeyValuePair<ActorStateTransitionCondition,ActorState>> conditions;
+    public GameObject curObject;
+    public float updateFrequency = 0f;
+    protected virtual void OnStateEnter(GameObject obj)
     {
-
+        curObject = obj;
     }
     // Start is called before the first frame update
     protected virtual IEnumerator Execute()
     {
-        yield return null;
-        OnStateExit(null);
+        bool breakTime = false;
+        ActorState nextState = null;
+        while(true)
+        {
+            foreach(var condition in conditions)
+            {
+                if(condition.Key.Accept(curObject))
+                {
+                    nextState = condition.Value;
+                    breakTime = true;
+                    break;
+                }
+            }
+            if (breakTime)
+                break;
+            yield return new WaitForSeconds(updateFrequency);
+        }
+
+        OnStateExit(nextState); 
     }
 
     protected virtual void OnStateExit(ActorState nextState)
     {
         if(nextState!=null)
         {
-            nextState.OnStateEnter();
+            nextState.OnStateEnter(curObject);
         }
         Destroy(this);
     }

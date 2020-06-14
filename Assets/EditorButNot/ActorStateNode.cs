@@ -12,6 +12,10 @@ public class ActorStateNode : Node
 
     public ActorState relevantState;
 
+    public string nodeName;
+
+    public List<ActorStateTransitionCondition> ports;
+
     public bool EntryPoint;
 
 }

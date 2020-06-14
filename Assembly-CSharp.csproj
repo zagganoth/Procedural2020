@@ -118,6 +118,7 @@
     <Compile Include="Assets\Scriptable Objects\Definitions\AI\ActorAI.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\AI\ActorState.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\AI\ActorStateTransitionCondition.cs" />
+    <Compile Include="Assets\Scriptable Objects\Definitions\AI\AlwaysTrueTransitionCondition.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\Biome.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\BuildObject.cs" />
     <Compile Include="Assets\Scriptable Objects\Definitions\Components\CursorComponent.cs" />

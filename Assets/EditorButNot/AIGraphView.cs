@@ -18,6 +18,7 @@ using Button = UnityEngine.UIElements.Button;
 public class AIGraphView : GraphView
 {
     public Vector2 defaultNodeSize = new Vector2(1000, 400);
+    public ActorStateNode _entryPointNode;
     public AIGraphView()
     {
         styleSheets.Add(Resources.Load<StyleSheet>("AIGraph"));
@@ -31,7 +32,8 @@ public class AIGraphView : GraphView
         var grid = new GridBackground();
         Insert(0, grid);
         grid.StretchToParentSize();
-        AddElement(GenerateEntryPointNode());
+        _entryPointNode = GenerateEntryPointNode();
+        AddElement(_entryPointNode);
     }
     public void Refresh()
     {
@@ -67,12 +69,12 @@ public class AIGraphView : GraphView
     {
         var retNode = new ActorStateNode
         {
-            title = nodeName,
             relevantState = null,
-            GUID = Guid.NewGuid().ToString(),
-            
-            
+            GUID = Guid.NewGuid().ToString(),   
         };
+
+        var oldLabel = retNode.titleContainer.Q<Label>();
+        retNode.titleContainer.Remove(oldLabel);
 
         var inputPort = GeneratePort(retNode, Direction.Input, Port.Capacity.Multi);
         inputPort.portName = "Input";
@@ -81,7 +83,30 @@ public class AIGraphView : GraphView
 
         var button = new Button(() => { AddConditionPort(retNode); });
         button.text = "New State Transition Condition";
+
+        if (nodeName == "New AI State")
+        {
+            var titleText = new TextField();
+            titleText.value = nodeName;
+            titleText.RegisterValueChangedCallback(evt =>
+            {
+                retNode.nodeName = evt.newValue;
+            });
+            retNode.titleContainer.Add(titleText);
+        }
+
         retNode.titleContainer.Add(button);
+        /*retNode.titleContainer.Add(new TextField
+        {
+            text = nodeName
+        });*/
+        retNode.mainContainer.Add(new Label("State Behaviour"));
+        var condField = new ObjectField
+        {
+            objectType = typeof(ActorState)
+        };
+        condField.RegisterValueChangedCallback(evt => retNode.relevantState = evt.newValue as ActorState);
+        retNode.mainContainer.Add(condField);
         retNode.SetPosition(new Rect(Vector2.zero, defaultNodeSize));
         retNode.RefreshExpandedState();
         retNode.RefreshPorts();
@@ -103,6 +128,15 @@ public class AIGraphView : GraphView
             objectType = typeof(ActorStateTransitionCondition),
             value = transCond
         };
+        Label l = condField.Q<Label>();
+        l.text = transCond == null ? "None" : transCond.name;
+        condField.RegisterValueChangedCallback(evt => 
+        {
+            if(retNode.ports.Contains(evt.previousValue))retNode.ports.Remove(evt.previousValue as ActorStateTransitionCondition);
+            ActorStateTransitionCondition cond = (evt.newValue as ActorStateTransitionCondition);
+            l.text = cond.name;
+            retNode.ports.Add(cond);
+        });
         //condField.label = generatedPort.portName;
         //condField.RegisterValueChangedCallback(evt => generatedPort.contentContainer.GetFirstOfType<ObjectField>().value = evt.newValue);
 
@@ -110,13 +144,13 @@ public class AIGraphView : GraphView
         {
             text = "X"
         };
-        //condField.StretchToParentSize();
+        generatedPort.contentContainer.Add(new Label("  "));
+        generatedPort.contentContainer.Add(new IntegerField
+        {
+            label = "Priority: "
+        });
         generatedPort.contentContainer.Add(condField);
-        var lab = condField.contentContainer.GetFirstOfType<UnityEngine.UIElements.Image>();
-        if (lab != null) Debug.Log(lab.ToString());
-        //generatedPort.contentContainer.Add();
-        //generatedPort.contentContainer.Sort((x,y)=>string.Compare(x.name,y.name));
-        //condField.StretchToParentSize();
+
         generatedPort.contentContainer.Add(deleteButton);
 
         retNode.outputContainer.Add(generatedPort);
@@ -139,20 +173,30 @@ public class AIGraphView : GraphView
         retNode.RefreshExpandedState();
     }
 
-    private ActorStateNode GenerateEntryPointNode()
+    public ActorStateNode GenerateEntryPointNode(ActorStateTransitionCondition cond = null)
     {
         var node = new ActorStateNode
         {
             title = "AWAKE",
-            GUID = Guid.NewGuid().ToString(),
+            GUID = "0",
             relevantState = null,
             EntryPoint = true
         };
 
         var generatePort = GeneratePort(node, Direction.Output);
         generatePort.portName = "Next";
+
+        var condField = new ObjectField
+        {
+            objectType = typeof(ActorStateTransitionCondition),
+            value = (cond == null ? ScriptableObject.CreateInstance<AlwaysTrueTransitionCondition>() : cond)
+        };
+
+        generatePort.contentContainer.Add(condField);
         node.outputContainer.Add(generatePort);
 
+
+        node.styleSheets.Add(Resources.Load<StyleSheet>("Node"));
         node.RefreshExpandedState();
         node.RefreshPorts();
 

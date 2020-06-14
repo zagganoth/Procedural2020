@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -10,7 +11,22 @@ using UnityEngine.UIElements;
 
 public class AIGraph : EditorWindow
 {
-    
+    /*
+    private DateTime nextSaveTime = DateTime.Now;
+    private void OnInspectorUpdate()
+    {
+        if((nextSaveTime == null || DateTime.Now > nextSaveTime) && (_serializer != null && destAI != null))
+        {
+            _serializer.SaveGraph(destAI);
+            nextSaveTime = DateTime.Now.AddMinutes(1);
+        }
+        else
+        {
+            nextSaveTime = DateTime.Now.AddMinutes(10);
+        }
+    }*/
+
+
     private ActorState _curState;
     private AIGraphView _graphView;
     private ActorAI destAI;
