@@ -1,0 +1,3 @@
+ActorStateNode #output ObjectField {
+	width: 180px;
+}

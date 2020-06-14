@@ -40,12 +40,14 @@ public class PlayerController : MonoBehaviour
     direction currentDirection;
     Dictionary<direction, string> directionBools;
     Dictionary<direction, Vector3> directionVectors;
+    public BoxCollider2D collider;
     private void Awake()
     {
         //moveSpeed *= 50;
         initializeDirectionBools();
         currentDirection = direction.down;
         characterSprite = GetComponent<SpriteRenderer>();
+        collider = GetComponent<BoxCollider2D>();
         //equippedItemObject = equippedItem.item;
         //swingWeaponAnimator = equippedItem.gameObject.GetComponent<Animator>();
         //equippedItemSprite = equippedItem.gameObject.GetComponent<SpriteRenderer>();

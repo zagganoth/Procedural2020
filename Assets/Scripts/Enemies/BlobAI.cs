@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class BlobAI : EnemyAI
 {
+    public ParticleSystem ps;
+    private void Awake()
+    {
+        ps = GetComponentInChildren<ParticleSystem>();
+    }
     protected override void Update()
     {
         if (dying || pausedAfterDamage) return;
@@ -16,5 +21,10 @@ public class BlobAI : EnemyAI
                 playerInRange = true;
             }
         }
+    }
+    public override void takeDamage(float damage)
+    {
+        base.takeDamage(damage);
+        ps.Play();
     }
 }

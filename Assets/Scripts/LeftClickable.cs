@@ -17,10 +17,8 @@ public class LeftClickable : MonoBehaviour
     public LeftClickUEvent action;
     public void invokeEvent(object sender, EventManager.OnLeftClickArgs args)
     {
-        Debug.Log(args.instanceId + ", " + GetInstanceID());
         if (args.instanceId == transform.gameObject.GetInstanceID())
         {
-            Debug.Log("Hi...");
             action.Invoke(args);
         }
     }

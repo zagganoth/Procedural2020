@@ -18,6 +18,7 @@ MonoBehaviour:
   farSprite: {fileID: -6142374563283994760, guid: 634828be704b9994292efea3522aabb6,
     type: 3}
   snapToGrid: 0
+  anim: {fileID: 7400000, guid: 9c25a5ba2414814428681e168ab8c773, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

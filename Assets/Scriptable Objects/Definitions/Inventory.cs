@@ -60,24 +60,29 @@ public class Inventory : MonoBehaviour
         //Cannot stack, so return
         if (item.maxStackSize <= 1 && usedSlots >= size) return false;
         int lIndex = items.IndexOf(item);
+        //Item not found
         if (lIndex == -1)
         {
-            //items.Add(item);
             if (position == -1)
                 items[firstUnusedIndex] = item;
             else items[position] =  item;
+            usedSlots++;
         }
         else
         {
-            if (itemCounts[lIndex] < items[lIndex].maxStackSize) itemCounts[lIndex]++;
+            if (itemCounts[lIndex] < items[lIndex].maxStackSize)
+            {
+                itemCounts[lIndex]++;
+            }
             else
             {
                 if (position == -1)
                     items[firstUnusedIndex] = item;
                 else items[position] = item;
+                usedSlots++;
             }
         }
-        usedSlots++;
+
         return true;
     }
     public void RemoveItem(ItemObject item)

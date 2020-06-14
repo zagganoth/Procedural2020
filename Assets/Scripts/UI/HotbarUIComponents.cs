@@ -36,7 +36,7 @@ public class HotbarUIComponents : BaseInventoryUIComponents
     }
     public void placeBlock(object sender, EventManager.OnRightClickArgs e)
     {
-        if (activeInventory.items[activeSlotIndex] == null) return;
+        if (activeInventory.items[activeSlotIndex] == null || !placeUI.validAction) return;
         PlaceableComponent pc;
         if ((pc = activeInventory.items[activeSlotIndex].getComponent("PlaceableComponent") as PlaceableComponent) && !wallTilemap.GetTile(Vector3Int.FloorToInt(e.clickPosition)))
         {
@@ -81,6 +81,8 @@ public class HotbarUIComponents : BaseInventoryUIComponents
             
             if ((Vector2.Distance(playerRef.transform.position,ray) < range) && (hit = Physics2D.Raycast(ray, Vector2.zero)))
             {
+                Debug.Log("Play animation!");
+                placeUI.playAnimation();
                 if ((wc = activeItem.getComponent("MeleeComponent") as MeleeComponent) && hit.transform.CompareTag("Enemy"))
                 {
                     EnemyAI enem = hit.transform.gameObject.GetComponent<EnemyAI>();

@@ -33,3 +33,4 @@ MonoBehaviour:
   farSprite: {fileID: -6142374563283994760, guid: 634828be704b9994292efea3522aabb6,
     type: 3}
   snapToGrid: 0
+  anim: {fileID: 7400000, guid: 7295f169affcb07489db6e129e628e0b, type: 2}

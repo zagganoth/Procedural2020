@@ -78,8 +78,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tag: CursorComponent
-  closeSprite: {fileID: -2565141449147483526, guid: 634828be704b9994292efea3522aabb6,
+  closeSprite: {fileID: 3732773415918084554, guid: 1e17f729274dd60439a0bd7d15dff7ea,
     type: 3}
   farSprite: {fileID: -6142374563283994760, guid: 634828be704b9994292efea3522aabb6,
     type: 3}
   snapToGrid: 0
+  anim: {fileID: 7400000, guid: c45abbe58d627e14a86f7f4b9d0102db, type: 2}
