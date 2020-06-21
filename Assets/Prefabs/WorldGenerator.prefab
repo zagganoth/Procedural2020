@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3205697232249745670
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3205697232249745664}
+  - component: {fileID: 3205697232249745671}
+  - component: {fileID: 3205697232249745665}
+  m_Layer: 0
+  m_Name: WorldGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &3205697232249745664
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3205697232249745670}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.229068, y: -0.7980294, z: -0.24618214}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3205697232249745671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3205697232249745670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c12605d7ebfebab4f9db80fa41c9fcee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  structuresOdds: 0.7
+  tilemaps:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  tiles:
+  - {fileID: 11400000, guid: 3bde3bab839ef46409c57c8fef31250a, type: 2}
+  - {fileID: 11400000, guid: 93208bd3df5ba094a95ebc2132f7300f, type: 2}
+  - {fileID: 11400000, guid: 527eea5eea55e0e44a6982f595895a4b, type: 2}
+  - {fileID: 11400000, guid: ba74858c34375aa4693e219c61541c4b, type: 2}
+  - {fileID: 11400000, guid: a366576612d7bba488479c372ba5d178, type: 2}
+  - {fileID: 11400000, guid: 15984a734f187884084400c7b57780c9, type: 2}
+  seed: 23923923
+  randomizeSeed: 0
+  defaultChunkSize: 50
+  qInit: {x: 0, y: 0}
+  cullDistance: 3
+  noiseParameterLists:
+  - seed: 23923923
+    amplitude: 0.55
+    frequency: 1
+    persistence: 0.5
+    lacunarity: 2
+    octaves: 4
+  - seed: 23923923
+    amplitude: 1
+    frequency: 5
+    persistence: 1
+    lacunarity: 2
+    octaves: 1
+  biomes:
+  - {fileID: 11400000, guid: e007eafc61c3f8648acee92ec3530f14, type: 2}
+  - {fileID: 11400000, guid: e86d4b657c272a641be7013015179dc9, type: 2}
+  chunksToGenerate: []
+  cpHandler: {fileID: 0}
+--- !u!114 &3205697232249745665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3205697232249745670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c3e04e0c898351478b574e45eb02af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileStore: {fileID: 11400000, guid: 6c7609abbc50b9640be32b4c8a3996d9, type: 2}

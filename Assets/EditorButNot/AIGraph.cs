@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 //This code is largely from https://github.com/m3rt32/NodeBasedDialogueSystem
 #if UNITY_EDITOR
@@ -31,6 +32,7 @@ public class AIGraph : EditorWindow
     private AIGraphView _graphView;
     private ActorAI destAI;
     private AIGraphSerializer _serializer;
+    //private SerializedObject _serializedObject;
     //[MenuItem("Graph/AI Graph")]
     public static void OpenDialogueGraphWindow(ActorAI AI)
     {
@@ -39,6 +41,17 @@ public class AIGraph : EditorWindow
         window.destAI = AI;
         window._serializer = AIGraphSerializer.GetInstance(window._graphView);
         window._serializer.LoadGraph(AI);
+        //window._serializedObject = new SerializedObject(AI);
+        /*foreach(ActorStateNode n in window._graphView.nodes.ToList())
+        {
+            var a = n.Q<Port>();
+            var b = a.contentContainer.Q<ObjectField>();
+            SerializedObject c; 
+            if(b != null) c = new SerializedObject(b.value);
+            else { Debug.Log(a.contentContainer.Q<VisualElement>()); }
+            a.contentContainer.Add(new Foldout());
+            //a.contentContainer.Add(new IMGUIContainer());
+        }*/
     }
     private void OnEnable()
     {
@@ -68,7 +81,7 @@ public class AIGraph : EditorWindow
     {
         if (destAI == null)
         {
-            Debug.Log("No active object! Not saving");
+            //Debug.Log("No active object! Not saving");
             return;
         }
         if (_serializer == null)

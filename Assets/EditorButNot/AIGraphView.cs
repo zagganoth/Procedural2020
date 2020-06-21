@@ -65,11 +65,11 @@ public class AIGraphView : GraphView
         return compatiblePorts;
     }
 
-    public ActorStateNode GenerateAINode(string nodeName)
+    public ActorStateNode GenerateAINode(string nodeName,ActorState relevantState = null)
     {
         var retNode = new ActorStateNode
         {
-            relevantState = null,
+            relevantState = relevantState,
             GUID = Guid.NewGuid().ToString(),   
         };
 
@@ -83,17 +83,15 @@ public class AIGraphView : GraphView
 
         var button = new Button(() => { AddConditionPort(retNode); });
         button.text = "New State Transition Condition";
-
-        if (nodeName == "New AI State")
+        retNode.nodeName = nodeName;
+        var titleText = new TextField();
+        titleText.value = nodeName;
+        titleText.RegisterValueChangedCallback(evt =>
         {
-            var titleText = new TextField();
-            titleText.value = nodeName;
-            titleText.RegisterValueChangedCallback(evt =>
-            {
-                retNode.nodeName = evt.newValue;
-            });
-            retNode.titleContainer.Add(titleText);
-        }
+            retNode.nodeName = evt.newValue;
+        });
+        retNode.titleContainer.Add(titleText);
+
 
         retNode.titleContainer.Add(button);
         /*retNode.titleContainer.Add(new TextField
@@ -103,7 +101,8 @@ public class AIGraphView : GraphView
         retNode.mainContainer.Add(new Label("State Behaviour"));
         var condField = new ObjectField
         {
-            objectType = typeof(ActorState)
+            objectType = typeof(ActorState),
+            value = relevantState
         };
         condField.RegisterValueChangedCallback(evt => retNode.relevantState = evt.newValue as ActorState);
         retNode.mainContainer.Add(condField);
@@ -114,7 +113,7 @@ public class AIGraphView : GraphView
         return retNode;
     }
 
-    public void AddConditionPort(ActorStateNode retNode, string overridenPortName = "", ActorStateTransitionCondition transCond = null)
+    public void AddConditionPort(ActorStateNode retNode, ActorStateTransitionCondition transCond = null, ActorState destState = null, string overridenPortName = "")
     {
         var generatedPort = GeneratePort(retNode, Direction.Output);
         var outputPortCount = retNode.outputContainer.Query("connector").ToList().Count;
@@ -128,14 +127,20 @@ public class AIGraphView : GraphView
             objectType = typeof(ActorStateTransitionCondition),
             value = transCond
         };
+        if(transCond!=null)retNode.ports.Add(transCond,destState);
         Label l = condField.Q<Label>();
         l.text = transCond == null ? "None" : transCond.name;
-        condField.RegisterValueChangedCallback(evt => 
+
+        condField.RegisterValueChangedCallback(evt =>
         {
-            if(retNode.ports.Contains(evt.previousValue))retNode.ports.Remove(evt.previousValue as ActorStateTransitionCondition);
+            if (evt.previousValue != null && retNode.ports.ContainsKey(evt.previousValue as ActorStateTransitionCondition)) retNode.ports.Remove(evt.previousValue as ActorStateTransitionCondition);
             ActorStateTransitionCondition cond = (evt.newValue as ActorStateTransitionCondition);
             l.text = cond.name;
-            retNode.ports.Add(cond);
+            if ((generatedPort.connections.Any(x => (x.input.node as ActorStateNode).GUID != retNode.GUID)))
+            {
+                    destState = (generatedPort.connections.First(x => (x.input.node as ActorStateNode).GUID != retNode.GUID).input.node as ActorStateNode).relevantState;
+            }
+            retNode.ports.Add(cond,destState);
         });
         //condField.label = generatedPort.portName;
         //condField.RegisterValueChangedCallback(evt => generatedPort.contentContainer.GetFirstOfType<ObjectField>().value = evt.newValue);
@@ -149,11 +154,37 @@ public class AIGraphView : GraphView
         {
             label = "Priority: "
         });
+        //generatedPort.contentContainer.Add(CreateEd)
         generatedPort.contentContainer.Add(condField);
+        generatedPort.RegisterCallback<MouseUpEvent>(e =>
+        {
+            if ((generatedPort.connections.Any(x => (x.input.node as ActorStateNode).GUID != retNode.GUID)))
+            {
+                destState = (generatedPort.connections.First(x => (x.input.node as ActorStateNode).GUID != retNode.GUID).input.node as ActorStateNode).relevantState;
+            }
+            ActorStateTransitionCondition a = (ActorStateTransitionCondition)generatedPort.Q<ObjectField>().value;
+            if(a != null)
+            {
+                //Debug.Log("Adding key value pair " + a + ", " + destState);
+                if (!retNode.ports.ContainsKey(a))
+                    retNode.ports.Add(a, destState);
+                else retNode.ports[a] = destState;
+            }
+        });
+        if (transCond != null)
+        {
+            var inspEl = new InspectorElement(transCond);
+            inspEl.RegisterCallback<MouseUpEvent>(e =>
+            {
+                retNode.RefreshExpandedState();
+            });
+            generatedPort.contentContainer.Add(inspEl);
+
+        }
 
         generatedPort.contentContainer.Add(deleteButton);
-
         retNode.outputContainer.Add(generatedPort);
+       
         retNode.RefreshPorts();
         retNode.RefreshExpandedState();
 

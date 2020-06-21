@@ -28,17 +28,48 @@ public class AssetHandler
 public class ActorAI : ScriptableObject
 {
     public AIGraphContainer editorGraphContainer;
-    public ActorStateNodeData head;
-    private void Execute(GameObject attachedObject)
+    public ActorState head;
+    public List<ActorState> states;
+    public IEnumerator Execute(GameObject attachedObject)
     {
-        if (editorGraphContainer != null && editorGraphContainer.nodeData.Any(x => x.GUID == "0"))
+        states = new List<ActorState>();
+        if (editorGraphContainer == null) {
+            Debug.LogError("Attempting to execute AI without any saved data!");
+            yield return null;
+        }
+        int index = 0;
+        List<KeyValuePair<ActorStateTransitionCondition, ActorState>> conds;
+        int entryPointIndex = 0;
+        foreach(var node in editorGraphContainer.nodeData)
+        {
+            if (node.relevantState == null) continue;
+            conds = new List<KeyValuePair<ActorStateTransitionCondition, ActorState>>();
+            states.Add(node.relevantState);
+            foreach (var port in node.ports)
+            {
+                conds.Add(new KeyValuePair<ActorStateTransitionCondition, ActorState>(port.cond, port.destState));
+            }
+            states[index].conditions = conds;
+            if (node.title == "Idle") entryPointIndex = index;
+            //states[index].conditions = new Keynode.ports;
+            index++;
+        }
+        //states[0].updateFrequency = 0.5f;
+        if (states.Count > 0)
+        {
+            yield return states[entryPointIndex].OnStateEnter(attachedObject, null);
+        }
+        yield return null;
+        /*
+        if (states.Any(x => x.GUID == "0"))
         {
             head = editorGraphContainer.nodeData.Find(x => x.GUID == "0");
+            
             /*foreach (var condPort in head.ports)
             {
                 if(condPort.cond.Accept(attachedObject))condPort.
-            }*/
-        }
+            }
+        }*/
     }
 #if UNITY_EDITOR
     [CustomEditor(typeof(ActorAI), true)]

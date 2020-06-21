@@ -9,5 +9,5 @@ public class AINodePortData
     public int priority;
     public ActorStateTransitionCondition cond;
     public string portName;
-    public string destPortGuid;
+    public ActorState destState;
 }

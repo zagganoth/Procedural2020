@@ -134,6 +134,7 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
+        if (structureOverMap == null) return;
         //rb.velocity = inputVector * Time.deltaTime;
         //transform.position += ;
         //if(!colliding)rb.velocity = new Vector3(inputVector.x, inputVector.y, 0) * Time.deltaTime;

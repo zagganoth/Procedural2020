@@ -12,4 +12,5 @@ public class ActorStateNodeData
     public string title;
     public Vector2 position;
     public List<AINodePortData> ports;
+    public bool EntryPoint = false;
 }

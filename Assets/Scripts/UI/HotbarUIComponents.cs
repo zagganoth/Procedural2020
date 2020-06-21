@@ -38,7 +38,7 @@ public class HotbarUIComponents : BaseInventoryUIComponents
     {
         if (activeInventory.items[activeSlotIndex] == null || !placeUI.validAction) return;
         PlaceableComponent pc;
-        if ((pc = activeInventory.items[activeSlotIndex].getComponent("PlaceableComponent") as PlaceableComponent) && !wallTilemap.GetTile(Vector3Int.FloorToInt(e.clickPosition)))
+        if ((pc = activeInventory.items[activeSlotIndex].getComponent("PlaceableComponent") as PlaceableComponent) && !wallTilemap.GetTile(wallTilemap.WorldToCell(e.clickPosition)))
         {
             wallTilemap.SetTile(Vector3Int.FloorToInt(e.clickPosition), pc.GetRelevantTile());
             wallTilemap.RefreshAllTiles();
@@ -81,12 +81,12 @@ public class HotbarUIComponents : BaseInventoryUIComponents
             
             if ((Vector2.Distance(playerRef.transform.position,ray) < range) && (hit = Physics2D.Raycast(ray, Vector2.zero)))
             {
-                Debug.Log("Play animation!");
                 placeUI.playAnimation();
                 if ((wc = activeItem.getComponent("MeleeComponent") as MeleeComponent) && hit.transform.CompareTag("Enemy"))
                 {
-                    EnemyAI enem = hit.transform.gameObject.GetComponent<EnemyAI>();
-                    enem.takeDamage(wc.damage);
+                    EnemyStateMachine enem = hit.transform.gameObject.GetComponent<EnemyStateMachine>();
+                    //enem.takeDamage(wc.damage);
+                    if(!enem.tokens.ContainsKey("damage"))enem.tokens.Add("damage",wc.damage);
                 }
                 LeftClickable lef;
                 if (lef = hit.transform.gameObject.GetComponent<LeftClickable>())

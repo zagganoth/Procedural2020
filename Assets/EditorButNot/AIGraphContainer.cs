@@ -8,4 +8,9 @@ public class AIGraphContainer : ScriptableObject
 {
     public List<ActorStateNodeLinkData> nodeLinks = new List<ActorStateNodeLinkData>();
     public List<ActorStateNodeData> nodeData = new List<ActorStateNodeData>();
+    public void RefreshFields()
+    {
+        nodeLinks = new List<ActorStateNodeLinkData>();
+        nodeData = new List<ActorStateNodeData>();
+    }
 }

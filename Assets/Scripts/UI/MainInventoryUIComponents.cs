@@ -13,11 +13,12 @@ public class MainInventoryUIComponents : BaseInventoryUIComponents
 
     private void Awake()
     {
-        EventManager.instance.OnInventoryAction += OnInventoryOpen;
+
     }
     protected override void Start()
     {
         base.Start();
+        EventManager.instance.OnInventoryAction += OnInventoryOpen;
         ToggleParent();
     }
     public override Inventory GetRelevantInventory()

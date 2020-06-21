@@ -37,60 +37,58 @@ public class AIGraphSerializer
     {
         
         if (!Edges.Any() && !Nodes.Any()) return;
-        var inst = ScriptableObject.CreateInstance<AIGraphContainer>();
-        SaveEdges();
+        bool newContainer = false;
+
+        AIGraphContainer inst;
+        if (!destObject.editorGraphContainer) {
+            inst = ScriptableObject.CreateInstance<AIGraphContainer>();
+            newContainer = true;
+        }else
+        {
+            inst = destObject.editorGraphContainer;
+            inst.RefreshFields();
+        }
+        SaveEdges(inst);
 
         List<AINodePortData> npd;
         //destObject.stateTransitions.Add(null, Nodes.Find(x => x.EntryPoint).outputContainer.ElementAt)
-        foreach(var stateNode in Nodes)
+        //foreach(var stateNode in Nodes)
+        for(int i= 0; i < Nodes.Count;i++)
         {
+            var stateNode = Nodes[i];
             npd = new List<AINodePortData>();
-            _targetGraphView.ports.ForEach((x) =>
+            foreach (var elem in stateNode.ports)
             {
-                ActorStateNode an = ((ActorStateNode)x.node);
-                ActorStateTransitionCondition cond = null;
-
-                if (an.GUID == stateNode.GUID)
+                //Debug.Log(elem.Value);
+                npd.Add(new AINodePortData
                 {
-                    for (int i = 0; i < x.contentContainer.childCount; i++)
-                    {
-                        if (x.contentContainer.ElementAt(i).GetType() == typeof(ObjectField))
-                        {
-                            cond = ((x.contentContainer.ElementAt(i) as ObjectField).value as ActorStateTransitionCondition);
-                        }
-                    }
-                    if (cond != null)
-                    {
-                        npd.Add(new AINodePortData
-                        {
-                            cond = cond,
-                            portName = x.portName,
-                            
-                        });
-                    }
-                }
-            });
+                    cond = elem.Key,
+                    destState = elem.Value
+                });
+            }
+
             inst.nodeData.Add(new ActorStateNodeData
             {
                 GUID = stateNode.GUID,
                 relevantState = stateNode.relevantState,
                 position = stateNode.GetPosition().position,
                 title = stateNode.nodeName,
-                ports = npd
+                ports = npd,
             });    
         }
-        if (destObject.editorGraphContainer)
+
+        if (newContainer)
         {
             AssetDatabase.RemoveObjectFromAsset(destObject.editorGraphContainer);
+            AssetDatabase.AddObjectToAsset(inst, AssetDatabase.GetAssetPath(destObject));
+            destObject.editorGraphContainer = inst;
+            AssetDatabase.SaveAssets();
         }
-        AssetDatabase.AddObjectToAsset(inst, AssetDatabase.GetAssetPath(destObject));
-        destObject.editorGraphContainer = inst;
         _containerCache = inst;
         UpdateVars(_targetGraphView);
-        AssetDatabase.SaveAssets();
     }
     
-    public void SaveEdges()
+    public void SaveEdges(AIGraphContainer inst)
     {
         if (Edges.Any())
         {
@@ -118,7 +116,7 @@ public class AIGraphSerializer
     {
         if(_targetGraphView==null)
         {
-            Debug.Log("No Graph view!");
+            //Debug.Log("No Graph view!");
             return;
         }
         if (_containerCache == sourceObject.editorGraphContainer) return;
@@ -159,20 +157,21 @@ public class AIGraphSerializer
         {
             if (node.GUID == "0")
             {
-                tempNode = _targetGraphView.GenerateEntryPointNode(node.ports.First().cond);
+                tempNode = _targetGraphView.GenerateEntryPointNode(node.ports.Count > 0 ? node.ports.First().cond : null);
                 tempNode.SetPosition(new Rect(node.position, _targetGraphView.defaultNodeSize));
                 _targetGraphView.AddElement(tempNode);
                 continue;
             }
-            tempNode = _targetGraphView.GenerateAINode(node.title);
+            tempNode = _targetGraphView.GenerateAINode(node.title,node.relevantState);
             
             tempNode.GUID = node.GUID;
             tempNode.SetPosition(new Rect(node.position, _targetGraphView.defaultNodeSize));
+            //tempNode.relevantState = node.relevantState;
             _targetGraphView.AddElement(tempNode);
 
             //nodePorts = _containerCache.nodeData.Where(x => x.GUID == node.GUID).ToList();
             nodePorts = node.ports;
-            nodePorts.ForEach(x => _targetGraphView.AddConditionPort(tempNode,x.portName,x.cond));
+            nodePorts.ForEach(x => _targetGraphView.AddConditionPort(tempNode, x.cond, x.destState, x.portName));
             tempNode.RefreshPorts();
             tempNode.RefreshExpandedState();
         }

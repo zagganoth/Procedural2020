@@ -1,6 +1,17 @@
 ActorStateNode #output ObjectField {
-	width: 180px;
+	width: 130px;
 }
+
+#output Port {
+	height: auto;
+	max-height: 100px;
+	/*max-width: 500px;*/
+	min-width: 100px;
+	width: auto;
+	align-self: flex-start;
+	position: relative;
+}
+
 ActorStateNode #output IntegerField .unity-label {
 	width: 50px;
 	min-width:50px;

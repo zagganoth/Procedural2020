@@ -20,7 +20,7 @@ public class CleanupTiles : MonoBehaviour
     {
         if (tm.GetTile(e.pos) != null)
         {
-            Debug.Log(tm.GetTile(e.pos));
+            //Debug.Log(tm.GetTile(e.pos));
             tm.SetTile(e.pos, null);
         }
     }

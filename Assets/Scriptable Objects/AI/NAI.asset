@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8352868197800614933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ffedf76a9e38254dbbea2992110ea25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nodeLinks:
+  - sourceNodeGuid: 0
+    portName: Next
+    destNodeGuid: 403732fa-efb3-476e-b087-234ae5bafc8e
+  - sourceNodeGuid: 403732fa-efb3-476e-b087-234ae5bafc8e
+    portName: Condition 0
+    destNodeGuid: dabf5df8-8709-4e27-ad3c-637fe1720d90
+  - sourceNodeGuid: dabf5df8-8709-4e27-ad3c-637fe1720d90
+    portName: Condition 0
+    destNodeGuid: b8ae1a8d-7782-4efa-a8f6-17da71789a2e
+  - sourceNodeGuid: b8ae1a8d-7782-4efa-a8f6-17da71789a2e
+    portName: Condition 0
+    destNodeGuid: 403732fa-efb3-476e-b087-234ae5bafc8e
+  nodeData:
+  - GUID: 0
+    relevantState: {fileID: 0}
+    title: 
+    position: {x: 100, y: 200}
+    ports: []
+    EntryPoint: 0
+  - GUID: 403732fa-efb3-476e-b087-234ae5bafc8e
+    relevantState: {fileID: 11400000, guid: be7a7c1e64bf3c74490d14d7ea652e11, type: 2}
+    title: Idle
+    position: {x: 420, y: 169}
+    ports:
+    - priority: 0
+      cond: {fileID: 11400000, guid: cd788c89d218fb642bec40a6937e18a3, type: 2}
+      portName: 
+      destState: {fileID: 11400000, guid: 268426a7ff5e8fb45a3e8a7eb7443d81, type: 2}
+    - priority: 0
+      cond: {fileID: 11400000, guid: e1402cb2c990cc24195689fe1b42e845, type: 2}
+      portName: 
+      destState: {fileID: 0}
+    EntryPoint: 0
+  - GUID: dabf5df8-8709-4e27-ad3c-637fe1720d90
+    relevantState: {fileID: 11400000, guid: 268426a7ff5e8fb45a3e8a7eb7443d81, type: 2}
+    title: Angry
+    position: {x: 933, y: 67}
+    ports:
+    - priority: 0
+      cond: {fileID: 11400000, guid: 8ddfbcdd6a0c5a94eb12760a1fac7026, type: 2}
+      portName: 
+      destState: {fileID: 11400000, guid: e74afe6d9f8337f4c89a96bd44416f6e, type: 2}
+    - priority: 0
+      cond: {fileID: 11400000, guid: e1402cb2c990cc24195689fe1b42e845, type: 2}
+      portName: 
+      destState: {fileID: 0}
+    EntryPoint: 0
+  - GUID: b8ae1a8d-7782-4efa-a8f6-17da71789a2e
+    relevantState: {fileID: 11400000, guid: e74afe6d9f8337f4c89a96bd44416f6e, type: 2}
+    title: Damaged
+    position: {x: 573, y: 352}
+    ports:
+    - priority: 0
+      cond: {fileID: 11400000, guid: 07b4699fe4d0d2448ac33519af15a639, type: 2}
+      portName: 
+      destState: {fileID: 11400000, guid: be7a7c1e64bf3c74490d14d7ea652e11, type: 2}
+    EntryPoint: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb25f861b2f8564bb88ff91d7bc2aa5, type: 3}
+  m_Name: NAI
+  m_EditorClassIdentifier: 
+  editorGraphContainer: {fileID: -8352868197800614933}
+  head: {fileID: 0}
+  states:
+  - {fileID: 11400000, guid: be7a7c1e64bf3c74490d14d7ea652e11, type: 2}
+  - {fileID: 11400000, guid: 268426a7ff5e8fb45a3e8a7eb7443d81, type: 2}
+  - {fileID: 11400000, guid: e74afe6d9f8337f4c89a96bd44416f6e, type: 2}

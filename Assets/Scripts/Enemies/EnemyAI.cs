@@ -41,7 +41,7 @@ public class EnemyAI : MonoBehaviour
         health.takeDamage(damage);
         if (health.dead)
         {
-            anim.SetTrigger("explode");
+            anim.SetTrigger("dead");
             StartCoroutine(waitAndDie());
         }
         else

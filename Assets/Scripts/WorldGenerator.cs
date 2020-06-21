@@ -134,7 +134,7 @@ public class WorldGenerator : MonoBehaviour
             float dist =  Vector2Int.Distance(qInit, prevQInit);
             if (dist > defaultChunkSize * cullDistance)
             {
-                yield return Ninja.JumpToUnity;
+                //yield return Ninja.JumpToUnity;
                 float stagger = 0f;
                 loadedChunks.RemoveWhere((chunkCenter chunk) => {
 
@@ -146,7 +146,7 @@ public class WorldGenerator : MonoBehaviour
                     }
                     return false;
                 });
-                yield return Ninja.JumpBack;
+                //yield return Ninja.JumpBack;
                 prevQInit = qInit;
             }
             yield return new WaitForSeconds(2f);

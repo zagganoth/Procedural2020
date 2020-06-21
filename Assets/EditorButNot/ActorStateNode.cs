@@ -14,7 +14,7 @@ public class ActorStateNode : Node
 
     public string nodeName;
 
-    public List<ActorStateTransitionCondition> ports;
+    public Dictionary<ActorStateTransitionCondition, ActorState> ports = new Dictionary<ActorStateTransitionCondition, ActorState>();
 
     public bool EntryPoint;
 
