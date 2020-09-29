@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.Collections;
 using ProtoBuf;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -18,35 +19,42 @@ public class ChunkPersistenceHandler : MonoBehaviour
     }
     public void CreateAndSaveChunk(int centerX, int centerY, List<TileBase[]> tileList,HashSet<int> modifiedTilemaps)
     {
-        List<intList> tileIndexList = new List<intList>();
-        int index = 0;
-        TileBase[] tileRay;
-        foreach(var intdex in modifiedTilemaps)
+        try
         {
-            tileRay = tileList[intdex];
-            tileIndexList.Add(new intList());
-            tileIndexList[index].tilemapIndex = intdex;
-            foreach(var tile in tileRay)
+            List<intList> tileIndexList = new List<intList>();
+            int index = 0;
+            TileBase[] tileRay;
+            foreach(var intdex in modifiedTilemaps)
             {
-                if (tile == null)
+                tileRay = tileList[intdex];
+                tileIndexList.Add(new intList());
+                tileIndexList[index].tilemapIndex = intdex;
+                foreach(var tile in tileRay)
                 {
-                    tileIndexList[index].list.Add(-1);
-                    continue;
+                    if (tile == null)
+                    {
+                        tileIndexList[index].list.Add(-1);
+                        continue;
+                    }
+                    if(!indexForTile.ContainsKey(tile))
+                    {
+                        indexForTile.Add(tile, tileStore.GetIndexForTile(tile));
+                    }
+                    tileIndexList[index].list.Add(indexForTile[tile]);
                 }
-                if(!indexForTile.ContainsKey(tile))
-                {
-                    indexForTile.Add(tile, tileStore.GetIndexForTile(tile));
-                }
-                tileIndexList[index].list.Add(indexForTile[tile]);
+                index++;
             }
-            index++;
-        }
-        Chunk chunk = new Chunk(centerX, centerY, tileIndexList);
+            Chunk chunk = new Chunk(centerX, centerY, tileIndexList);
         
-        string dirPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/My Games/Procedural/" + centerX + "_" + centerY + ".cnk";
-        using (FileStream stream = new FileStream(dirPath, FileMode.Create, FileAccess.Write))
+            string dirPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/My Games/Procedural/" + centerX + "_" + centerY + ".cnk";
+            using (FileStream stream = new FileStream(dirPath, FileMode.Create, FileAccess.Write))
+            {
+                Serializer.Serialize(stream, chunk);
+            }
+        }
+        catch(Exception e)
         {
-            Serializer.Serialize<Chunk>(stream, chunk);
+            Debug.LogError("Exception!");
         }
         //Chunk chunk = new Chunk();
     }

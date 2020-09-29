@@ -158,6 +158,8 @@
     <Compile Include="Assets\Scripts\ChestManager.cs" />
     <Compile Include="Assets\Scripts\ChunkPersistenceHandler.cs" />
     <Compile Include="Assets\Scripts\CleanupTiles.cs" />
+    <Compile Include="Assets\Scripts\CustomTilemap\CustomTilemap.cs" />
+    <Compile Include="Assets\Scripts\CustomTilemap\Grid.cs" />
     <Compile Include="Assets\Scripts\Enemies\BlobAI.cs" />
     <Compile Include="Assets\Scripts\Enemies\EnemyAI.cs" />
     <Compile Include="Assets\Scripts\Enemies\EnemyStateMachine.cs" />
@@ -422,6 +424,12 @@
     <Reference Include="UnityEditor">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.0f1/Editor/Data/Managed/UnityEditor.dll</HintPath>
     </Reference>
+    <Reference Include="Photon3Unity3D">
+      <HintPath>D:/Projects/Unity/Procedural/Assets/External/Photon/PhotonLibs/Photon3Unity3D.dll</HintPath>
+    </Reference>
+    <Reference Include="websocket-sharp">
+      <HintPath>D:/Projects/Unity/Procedural/Assets/External/Photon/PhotonLibs/WebSocket/websocket-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Protobuf">
       <HintPath>D:/Projects/Unity/Procedural/Assets/Packages/Google.Protobuf.3.12.1/lib/net45/Google.Protobuf.dll</HintPath>
     </Reference>
@@ -454,12 +462,6 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>D:/Projects/Unity/Procedural/Library/PackageCache/com.unity.nuget.newtonsoft-json@2.0.0-preview/Runtime/Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Photon3Unity3D">
-      <HintPath>D:/Projects/Unity/Procedural/Assets/External/Photon/PhotonLibs/Photon3Unity3D.dll</HintPath>
-    </Reference>
-    <Reference Include="websocket-sharp">
-      <HintPath>D:/Projects/Unity/Procedural/Assets/External/Photon/PhotonLibs/WebSocket/websocket-sharp.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.0f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>

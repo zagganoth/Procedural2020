@@ -57,6 +57,7 @@ public class WorldGenerator : MonoBehaviour
     Vector2Int prevQInit;
     [SerializeField]
     int cullDistance;
+    [SerializeField]
     //List of flattened chunks, containing all data to be displayed on screen
     List<List<tileNames>> chunkTiles;
     //List of chunk centers
@@ -69,6 +70,7 @@ public class WorldGenerator : MonoBehaviour
     int heightNoiseIndex;
     [SerializeField]
     List<Biome> biomes;
+    Dictionary<Tuple<int, int>, string> biomesDict;
     /*
     [SerializeField]
     NoiseParameters heightmapNoise;
@@ -97,6 +99,7 @@ public class WorldGenerator : MonoBehaviour
             boundsCenterY = bY;
         }
     }
+
     private void Awake()
     {
         saver = GetComponent<StructureSaver>();
@@ -119,11 +122,11 @@ public class WorldGenerator : MonoBehaviour
             /*if (nosP.name == "Moisture") moistureNoiseIndex = index;
             else if (nosP.name == "Height") heightNoiseIndex = index;*/
             index++;
-        }   
-
+        }
+        biomesDict = new Dictionary<Tuple<int, int>, string>();
         GenerateMap(new List<chunkCenter> { origin },defaultChunkSize);
         StartCoroutine(chunkManager());
-        this.StartCoroutineAsync(chunkCuller());
+        StartCoroutine(chunkCuller());
     }
 
     private IEnumerator chunkCuller()
@@ -154,6 +157,7 @@ public class WorldGenerator : MonoBehaviour
     }
     private bool chunkExistsOnFile(chunkCenter c)
     {
+        Debug.Log("Checking if chunk " + c.boundsCenterX + ", " + c.boundsCenterY + " exists on file");
         DecompressedChunk chunkParams = cpHandler.LoadChunkFromDisk(c.boundsCenterX / defaultChunkSize, c.boundsCenterY / defaultChunkSize, defaultChunkSize);
         if (chunkParams == null) return false;
         SetTilesForChunk(chunkParams.tilemapIndices, chunkParams.tileLists, chunkParams.positionLists);
@@ -172,6 +176,7 @@ public class WorldGenerator : MonoBehaviour
             NoiseValues
         );
         noiseLists.Add(NoiseValues);
+        Debug.Log("Generating new chunk noise values at " + c.boundsCenterX.ToString() + ", " + c.boundsCenterY.ToString());
         return job.Schedule();
     }
     //Pass in a list of chunks to be generated, and it will call jobs to get noise values for 
@@ -245,8 +250,10 @@ public class WorldGenerator : MonoBehaviour
             //GenerateStructures(cCenters[noiseListNum],NoiseValues.ToList());
             boundsCenterY = cCenters[noiseListNum].boundsCenterY;
             boundsCenterX = cCenters[noiseListNum].boundsCenterX;
+            Debug.Log("Setting chunk tiles for" + cCenters[noiseListNum].boundsCenterX + ", " + cCenters[noiseListNum].boundsCenterY);
             index = 0;
             curBiome = getBiomeForLocation(tileNoiseLists[moistureNoiseIndex][noiseListNum][randIndex]);
+            biomesDict.Add(Tuple.Create(boundsCenterX, boundsCenterY), curBiome.name);
             foreach (var curMapData in curBiome.tilemaps)
             {
                 if (!modifiedTilemaps.Contains(curMapData.tilemapIndex))

@@ -14,7 +14,7 @@ public class HotbarUIComponents : BaseInventoryUIComponents
     [SerializeField]
     Sprite activeSlotSprite;
     [SerializeField]
-    Tilemap wallTilemap;
+    Grid<TileBase> wallTilemap;
     [SerializeField]
     PlacingUI placeUI;
     PlayerController playerRef;
@@ -38,12 +38,13 @@ public class HotbarUIComponents : BaseInventoryUIComponents
     {
         if (activeInventory.items[activeSlotIndex] == null || !placeUI.validAction) return;
         PlaceableComponent pc;
-        if ((pc = activeInventory.items[activeSlotIndex].getComponent("PlaceableComponent") as PlaceableComponent) && !wallTilemap.GetTile(wallTilemap.WorldToCell(e.clickPosition)))
+        if ((pc = activeInventory.items[activeSlotIndex].getComponent("PlaceableComponent") as PlaceableComponent) && !wallTilemap.GetCell(wallTilemap.WorldToCell(e.clickPosition)))
         {
-            wallTilemap.SetTile(Vector3Int.FloorToInt(e.clickPosition), pc.GetRelevantTile());
-            wallTilemap.RefreshAllTiles();
-    }
+            wallTilemap.SetCell(Vector3Int.FloorToInt(e.clickPosition), pc.GetRelevantTile());
+            //wallTilemap.RefreshAllTiles();
         }
+    }
+
     public override Inventory GetRelevantInventory()
     {
         return activeInventory;
